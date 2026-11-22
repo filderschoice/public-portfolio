@@ -4,6 +4,9 @@
 
 ## 2026-11-22
 
+- ユーザーの決定を反映: 最新リリースの取得は gh ではなく公開 REST API（認証なし）を urllib で GET する補助スクリプト
+  propose-releases.py を作る方向とし、BL-010 を要確認から未着手へ改めた。更新依頼の手順を固定する Skill
+  portfolio-update を BL-012 として起票し、BL-011 の依存と完了条件を更新
 - README の掲載表へイラスト列を追加し、公開ページのカードへ簡易イラストと「実際の画面ではありません」の注記を表示。
   build-pages.py へイラストの ID・実在・禁止記述の検査と CSP の meta を追加（BL-008）
 - 掲載4件の簡易イラスト（SVG）を `site/illustrations/` へ追加し、`.gitattributes` で LF に固定（BL-007）。
