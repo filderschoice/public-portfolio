@@ -12,7 +12,7 @@
 
 終了コード: 0 = 正常（差分の有無を問わない）、2 = 不正な入力・取得失敗。
 接続先は https://api.github.com 固定（資格情報・トークンは使わない。リダイレクト先も検証する）。
-実 API を呼ぶのは --live を明示したときだけで、ユーザーが対話で更新を依頼したときに限る（自律ループ内では --from-json だけを使う）。
+実 API を呼ぶのは --live を明示したときだけで、ユーザーが対話で更新を依頼したとき、または自律ループ内では CONTRIBUTING.local.md の例外 EX-001 の期限内・条件内に限る。
 """
 import argparse
 import datetime
@@ -232,7 +232,7 @@ def main():
     args = ap.parse_args()
     if not args.live and not args.from_json:
         print("エラー: 取得元を指定してください。--from-json FILE（ネットワークへ接続しない）、"
-              "または --live（公開 REST API へ接続。対話モードでユーザーが更新を依頼したときだけ）", file=sys.stderr)
+              "または --live（公開 REST API へ接続。ユーザーが更新を依頼したときだけ。自律ループ内は例外 EX-001 の条件内）", file=sys.stderr)
         return 2
     try:
         return run(args)

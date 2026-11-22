@@ -4,6 +4,9 @@
 
 ## 2026-11-22
 
+- ユーザーの決定（実 API を自律ループでも使えるようにする）を、ガードレール 9 章の期限付き例外 EX-001 として `CONTRIBUTING.local.md` へ記録
+  （最新リリースの取得に限り `--live` を許可。条件5点・期限 2027-11-22・責任者 `@filderschoice`）。`rules/` の本文は変更していない。
+  portfolio-update の Skill・README・DESIGN・propose-releases.py の記述を合わせた
 - 最新リリースの反映手順の確認として、ikumemo の v0.1.0（2026-11-22、プレリリース）を RELEASES 表へ反映し、`site/index.html` を再生成。
   API 応答は対話側で保存し（認証なし・GET のみ）、ループ内は `propose-releases.py --from-json` と `--apply` のみで実施。
   gh-pages への反映はユーザーが `git subtree push --prefix site origin gh-pages` で行う

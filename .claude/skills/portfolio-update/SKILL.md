@@ -1,6 +1,6 @@
 ---
 name: portfolio-update
-description: 公開ポートフォリオ（README.md の掲載表・最新リリース表・イラストと、そこから生成する site/index.html）を更新する手順。「ポートフォリオを更新して」「最新リリースを反映して」「掲載にアプリを追加して」「公開ページを更新して」等の依頼で参照する。更新内容の振り分け、scripts/propose-releases.py による差分案→確認→--apply、build-pages.py の再生成と --check、品質ゲート、コミット案の提示までを扱う。実 API は --live を明示したときだけ（対話モードのみ）で、自律ループ内では --from-json だけを使い、git push と gh-pages への反映はユーザーが行う。
+description: 公開ポートフォリオ（README.md の掲載表・最新リリース表・イラストと、そこから生成する site/index.html）を更新する手順。「ポートフォリオを更新して」「最新リリースを反映して」「掲載にアプリを追加して」「公開ページを更新して」等の依頼で参照する。更新内容の振り分け、scripts/propose-releases.py による差分案→確認→--apply、build-pages.py の再生成と --check、品質ゲート、コミット案の提示までを扱う。実 API は --live を明示したときだけで（対話モード、または自律ループ内では CONTRIBUTING.local.md の例外 EX-001 の期限内・条件内に限る）、git push と gh-pages への反映はユーザーが行う。
 ---
 
 # ポートフォリオ更新手順
@@ -28,7 +28,7 @@ description: 公開ポートフォリオ（README.md の掲載表・最新リリ
 
 1. `git branch --show-current` で作業ブランチ（規定ブランチ以外）を確認する。規定ブランチなら作成してから着手する
 2. 掲載表・イラストの変更があれば先に直す。変更が README の規則を満たすかは手順5の生成でも検出される
-3. 最新リリースを反映する場合: `python scripts/propose-releases.py --live` を実行する（実 API を GET。`--live` の実行は対話モードのみ許される）。
+3. 最新リリースを反映する場合: `python scripts/propose-releases.py --live` を実行する（実 API を GET。自律ループ内の `--live` は手順3の例外 EX-001 の条件内に限る）。
    出力された差分案（版・公開日・種類）が妥当か、プレリリース・正式の別を含めて確認してから、
    `python scripts/propose-releases.py --live --apply` で RELEASES 表だけを書き換える
 4. エラー終了（終了コード2）したときは、メッセージの原因（取得失敗・掲載表の repo 列の形など）を直す。README は壊れない
@@ -42,9 +42,13 @@ description: 公開ポートフォリオ（README.md の掲載表・最新リリ
 
 ## 3. 自律ループ内
 
-- 実 API を呼ばない（guardrails 12.5）。`propose-releases.py` は `--live` を付けて実行しない。`--from-json <保存ファイル>` だけを使う
-  （形式は `{"<repo 名>": <releases API の応答の配列>}`）。保存ファイルが無ければ最新リリースの更新は行わず、
+- 実 API は原則として呼ばない（guardrails 12.5）。`--live` は、`CONTRIBUTING.local.md`「例外の追跡」の EX-001 が**期限内**で、
+  その条件（ユーザーがその回のループで最新リリースの反映を指示している／認証なし・資格情報不使用／GET のみ・接続先固定／
+  実行はオーケストレータ本人で、サブエージェントへ委任しない／失敗時は再試行せず BACKLOG へ `要確認` で記録）を
+  **すべて満たすときだけ**使える。期限切れ・条件不足のときは `--from-json <保存ファイル>` だけを使う
+  （形式は `{"<repo 名>": <releases API の応答の配列>}`）。保存ファイルも無ければ最新リリースの更新は行わず、
   人手（対話モード）で行う項目として BACKLOG へ残す
+- 例外を使った場合は、実施記録（`CHANGELOG.md`）へ「EX-001 により --live を実行した」と書く
 - 掲載表・イラスト・build-pages.py の検証など、ネットワークを使わない更新は手順2の2・5〜7と同じに進め、
   ループの規約（Skill `autonomous-loop`）どおり作業ブランチへ 1 タスク 1 コミットする。作業ブランチへコミットする前に
   `git add` の後で `python scripts/scan-secrets.py --require-changes` を実行して終了コード0を確かめる

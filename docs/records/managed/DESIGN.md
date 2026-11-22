@@ -101,7 +101,8 @@
 ## エージェント実装指示
 
 - 掲載項目を増やすときは README の掲載表と最新リリース表へ1行ずつ追加し（イラストを付けるなら SVG も `site/illustrations/` へ置く）、品質ゲートを通す
-- リリースのたびに `python scripts/propose-releases.py --live`（対話で依頼されたときだけ）で差分案を出して確認し、`--live --apply` で最新リリース表を更新して、
-  生成と `--check` を実行する（FR-007）。ループ内では実 API を呼ばず `--from-json` だけを使う
+- リリースのたびに `python scripts/propose-releases.py --live`（対話で依頼されたとき、またはループ内では例外 EX-001 の期限内・条件内だけ）
+  で差分案を出して確認し、`--live --apply` で最新リリース表を更新して、生成と `--check` を実行する（FR-007）。
+  ループ内の実 API は `CONTRIBUTING.local.md` の例外 EX-001（期限 2027-11-22）の条件内だけで、それ以外は `--from-json` だけを使う
 - 要件 FR-001・FR-002 を変更する場合は本書を更新する
 <!-- COPILOT_RECORDS:END -->
