@@ -77,7 +77,8 @@
     build-pages.py がカードへ img 要素で表示する。ID は正規表現 ^[A-Za-z0-9-]+$ に一致し、
     site/illustrations/<ID>.svg が実在するものだけを受け付ける（それ以外は終了コード2）。
     参照する SVG に script・foreignObject・on で始まる属性・href/xlink:href・url(・@import・http が含まれれば
-    終了コード2とする（固定資産の混入対策）。img の src は相対パス illustrations/<ID>.svg（Pages は
+    終了コード2とする（固定資産の混入対策。ただし SVG を単体で表示するのに必須の名前空間宣言
+    xmlns="http://www.w3.org/2000/svg" だけは、取り除いてから検査する）。img の src は相対パス illustrations/<ID>.svg（Pages は
     /public-portfolio/ 配下のため絶対パスにしない）、alt は「<名前> の画面イメージ（簡易イラスト。実際の画面ではありません）」を
     html.escape して出し、width と height を指定する。カードに「イメージ図。実際の画面ではありません」の注記を、
     ページの lead にも同趣旨の一文を出す。CSS 定数へイラストの枠の配色（ライト/ダーク）を追加する。
@@ -91,36 +92,11 @@
     4件のカードにイラストと注記が出る。build-pages.py の再実行で差分が出ず（冪等）、--check が終了コード0。
     不正な ID・存在しない ID・禁止要素を含む SVG で終了コード2になることを一時ファイルで確かめる
     （確認後に一時ファイルを残さない）。markdownlint・validate-records・scan-secrets が合格
-  依存:
-    - BL-007
+  依存: []
   根拠: >-
     既定値として、SVG は index.html へ埋め込まず img で読み込む方式にした（img として読まれた SVG ではスクリプトが
     動かず外部資源も読まれないため安全で、生成スクリプトが SVG の中身を組み立てないので XSS 面が増えない）。
     イラストの対応付けは名前からの暗黙導出ではなく列で明示し、共有や「-」を書ける形にした。
     CSP は外部資源を読まない既存方針を機械的に担保するだけで、公開範囲や外部への影響は変わらない
-- id: BL-007
-  区分: 機能追加
-  タスク内容: >-
-    掲載4件の簡易イラストを手書きの SVG として site/illustrations/ へ追加する（sesami-wear.svg・ikumemo.svg・
-    romcha.svg・windows-devenv-setup.svg）。描くのは README の説明に由来する要素だけで、
-    sesami-wear は丸いウォッチ画面に施錠/解錠のタイル（ワンタップのボタン）と状態を示すコンプリケーション、
-    ikumemo はスマホ画面にマイクと買い物リスト・スワイプで記録する行・小さなカレンダー、
-    romcha はスマホ画面の動画領域に重なる浮動チャット窓（見るだけで入力欄を描かない）、
-    windows-devenv-setup はターミナル窓に winget と npm の実行行と完了表示を描く。
-    各 SVG は viewBox を持ち、role="img" と aria-labelledby で参照する title・desc を入れ、
-    title には「イメージ図（実際の画面ではありません）」を含める。自前の背景を敷き、
-    style 内の prefers-color-scheme の切り替えでダークでも判読できる配色にする。
-    script・foreignObject・イベント属性・href・外部 URL・外部フォント・埋め込み画像を使わず、文字は最小限にする。
-    改行を LF に固定するため .gitattributes へ site/illustrations/*.svg の eol=lf を追加する
-  優先度: P1
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    4つの SVG が XML として解析でき（python の xml.etree.ElementTree で読める）、禁止要素・属性・http を含まない
-    （検索で0件）。markdownlint・validate-records・scan-secrets が合格し、build-pages.py --check が変わらず終了コード0
-  依存: []
-  根拠: >-
-    実機画面ではなく説明文に基づく模式図とし、実画像と誤解されないよう SVG 自体の title にも注記を持たせる。
-    参照の追加（BL-008）と分けたのは、資産の作成と生成スクリプトの変更を別々にレビューできるようにするため
 ```
 <!-- COPILOT_RECORDS:END -->

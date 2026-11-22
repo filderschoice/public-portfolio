@@ -5,6 +5,34 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 15:00
+  summary: 掲載4件の簡易イラスト（SVG）を site/illustrations/ へ追加
+  details:
+    変更内容: >-
+      sesami-wear・ikumemo・romcha・windows-devenv-setup の模式図を手書きの SVG（viewBox 400x300）として追加した。
+      README の説明に出てくる要素（ウォッチのタイルと状態表示、音声入力・買い物リスト・スワイプ・カレンダー・期限、
+      動画に重なる見るだけの浮動チャット窓、winget と npm の実行行と完了表示）だけを描き、各 SVG に role="img"・title・desc・
+      「実際の画面ではありません」の注記を入れた。配色は style 内の prefers-color-scheme でダークに対応した。
+      script・foreignObject・イベント属性・href・url(・@import・外部フォント・埋め込み画像は使っていない。
+      .gitattributes へ site/illustrations/*.svg の eol=lf を追加した。
+      既定値: SVG を単体で表示するには名前空間宣言 xmlns="http://www.w3.org/2000/svg" が必須のため、
+      完了条件の「http を含まない」は、この宣言だけを除いて検査する意味に解釈した（BL-008 の検査も同様に記述を補った）
+    変更ファイル:
+      - site/illustrations/sesami-wear.svg
+      - site/illustrations/ikumemo.svg
+      - site/illustrations/romcha.svg
+      - site/illustrations/windows-devenv-setup.svg
+      - .gitattributes
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      xml.etree.ElementTree による4件の解析、禁止要素・属性・http の検索、ヘッドレス Edge での描画確認、
+      python scripts/build-pages.py --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 4件が XML として解析でき、禁止語の検索は0件（名前空間宣言を除く）、ライト/ダークとも描画を確認、各ゲート合格
+    関連ID:
+      - BL-007
 - date: 2026-11-22 14:00
   summary: レビュー指摘の修正（site/index.html の改行固定と README・DESIGN の記述整理）
   details:

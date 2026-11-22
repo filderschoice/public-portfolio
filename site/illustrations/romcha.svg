@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t d">
+<title id="t">romcha のイメージ図（実際の画面ではありません）</title>
+<desc id="d">横向きのスマホ画面の動画領域に、見るだけのチャットを表示する浮動の小窓が重なっている模式図。入力欄はない。</desc>
+<style>
+svg{--bg:#eaeef2;--dev:#2b3139;--scr:#ffffff;--pan:#f0f3f6;--tx:#1f2328;--mu:#6e7781;--ac:#0969da;--acf:#ffffff;--ok:#1a7f37;--wn:#9a6700;--ln:#d0d7de}
+@media (prefers-color-scheme:dark){svg{--bg:#0d1117;--dev:#6e7681;--scr:#0b0f14;--pan:#1c2128;--tx:#e6edf3;--mu:#9da7b3;--ac:#58a6ff;--acf:#0b0f14;--ok:#3fb950;--wn:#d29922;--ln:#30363d}}
+.bg{fill:var(--bg)}.dev{fill:var(--dev)}.scr{fill:var(--scr)}.pan{fill:var(--pan);stroke:var(--ln);stroke-width:1.5}
+.tx{fill:var(--tx);font:600 12px system-ui,sans-serif}.big{fill:var(--tx);font:600 26px system-ui,sans-serif}.sm{fill:var(--mu);font:11px system-ui,sans-serif}
+.ac{fill:var(--ac)}.acs{fill:none;stroke:var(--ac);stroke-width:3;stroke-linecap:round}.ok{fill:var(--ok)}.oks{fill:none;stroke:var(--ok);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.wn{fill:var(--wn)}.mu{fill:var(--mu)}.bar{fill:var(--ln)}.ln{fill:none;stroke:var(--ln);stroke-width:1.5}
+.f{fill:var(--acf)}.fs{fill:none;stroke:var(--acf);stroke-width:3;stroke-linecap:round}.ft{fill:var(--acf);font:600 12px system-ui,sans-serif}
+.mono{font:600 13px ui-monospace,Consolas,monospace;fill:var(--tx)}.pr{fill:var(--ac)}
+</style>
+<rect class="bg" width="400" height="300"/>
+<rect class="dev" x="30" y="30" width="340" height="224" rx="26"/><rect class="pan" x="44" y="42" width="312" height="200" rx="14"/><circle class="ac" cx="130" cy="140" r="30"/><path class="f" d="M121 124l26 16-26 16z"/><rect class="bar" x="60" y="224" width="170" height="6" rx="3"/><rect class="ac" x="60" y="224" width="70" height="6" rx="3"/><rect class="scr" x="236" y="58" width="108" height="140" rx="10" style="opacity:.94"/><rect class="pan" x="236" y="58" width="108" height="140" rx="10"/><rect class="bar" x="237" y="59" width="106" height="18" rx="9"/><circle class="mu" cx="249" cy="68" r="3"/><circle class="ac" cx="250" cy="96" r="6"/><rect class="bar" x="262" y="91" width="68" height="5" rx="2.5"/><rect class="bar" x="262" y="100" width="42" height="5" rx="2.5"/><circle class="ok" cx="250" cy="126" r="6"/><rect class="bar" x="262" y="121" width="58" height="5" rx="2.5"/><rect class="bar" x="262" y="130" width="48" height="5" rx="2.5"/><circle class="wn" cx="250" cy="156" r="6"/><rect class="bar" x="262" y="151" width="70" height="5" rx="2.5"/><rect class="bar" x="262" y="160" width="30" height="5" rx="2.5"/><text class="sm" x="290" y="188" text-anchor="middle">見るだけ</text><text class="sm" x="200" y="276" text-anchor="middle">動画に重なる浮動チャット窓</text><text class="sm" x="200" y="292" text-anchor="middle">イメージ図（実際の画面ではありません）</text>
+</svg>
