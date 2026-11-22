@@ -12,3 +12,4 @@
 - 公開ページをカード表示・レスポンシブ・ダークモードに対応（BL-003）
 - README に掲載リポジトリの追加手順を追記（BL-004）
 - レビュー指摘の修正として .gitattributes で site/index.html を LF に固定し、README・DESIGN の記述を整理
+- BACKLOG の BL-005 へ CODEOWNERS のプレースホルダの確認事項、BL-006 へ Pages 公開元の注記を追記
