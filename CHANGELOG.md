@@ -4,6 +4,10 @@
 
 ## 2026-11-22
 
+- ユーザーの決定で BL-013 を完了とし、`CLAUDE.md` の品質ゲート表の単体テスト行を `python -m unittest discover -s tests`（全件成功）へ変更。
+  BL-013 を BACKLOG から削除し、BACKLOG は空。DESIGN の記述を合わせた
+- ユーザーの指示で BL-011（人手検証）を完了として BACKLOG から削除。公開ページ（gh-pages `f1ac976`、ビルド成功・HTTP 200）で
+  ikumemo の v0.1.0 リンクを含む表示を確認済み。BACKLOG は BL-013（要確認）のみ
 - ユーザーの決定（実 API を自律ループでも使えるようにする）を、ガードレール 9 章の期限付き例外 EX-001 として `CONTRIBUTING.local.md` へ記録
   （最新リリースの取得に限り `--live` を許可。条件5点・期限 2027-11-22・責任者 `@filderschoice`）。`rules/` の本文は変更していない。
   portfolio-update の Skill・README・DESIGN・propose-releases.py の記述を合わせた
