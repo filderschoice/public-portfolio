@@ -34,7 +34,7 @@ class SvgProblemTest(unittest.TestCase):
 
     def test_rejected_inputs(self):
         """各入力が、想定した検査の分岐（理由メッセージの識別子）で拒否されることまで確かめる。"""
-        raw, nsdecl, parse, root = "禁止された記述", "名前空間以外", "XML として解析", "ルート要素"
+        raw, nsdecl, parse, root = "SVG に使えない構文", "名前空間以外", "XML として解析", "ルート要素"
         elem, unknown, nsattr = "許可されていない要素", "許可されていない属性", "名前空間付きの属性"
         handler, link, value, style = "イベントハンドラ属性", "リンク属性", "の値に禁止", "style 要素に禁止"
         cases = {
@@ -43,6 +43,7 @@ class SvgProblemTest(unittest.TestCase):
             "a element": (f'<svg {NS}><a/></svg>', elem),
             "CDATA": (f"<svg {NS}><style><![CDATA[.a{{}}]]></style></svg>", raw),
             "DOCTYPE": (f"<!DOCTYPE svg><svg {NS}></svg>", raw),
+            "ENTITY without DOCTYPE": (f'<!ENTITY a "b"><svg {NS}></svg>', raw),
             "ENTITY": (f'<!DOCTYPE svg [<!ENTITY a "b">]><svg {NS}>&a;</svg>', raw),
             "processing instruction": (f'<?xml version="1.0"?><svg {NS}></svg>', raw),
             "comment": (f"<svg {NS}><!-- c --></svg>", raw),
@@ -81,11 +82,19 @@ class SvgProblemTest(unittest.TestCase):
             "character reference in tag name": (f"<svg {NS}><scr&#105;pt>x</scr&#105;pt></svg>", parse),
             "undeclared prefix (xlink:href)": (f'<svg {NS}><use xlink:href="#a"/></svg>', parse),
         }
+        problems = {}
         for label, (svg, expected) in cases.items():
             with self.subTest(label):
                 problem = bp.svg_problem(svg)
                 self.assertTrue(problem, f"{label} が通ってしまった")
                 self.assertIn(expected, problem, f"{label} が想定外の分岐で拒否された: {problem}")
+                problems[label] = problem
+        # 自己検査: 各分岐の期待文字列が、他の分岐のメッセージに含まれない（別の分岐で通る偽陽性を防ぐ）
+        for label, (_, expected) in cases.items():
+            for other, (_, other_expected) in cases.items():
+                if expected != other_expected and label in problems and other in problems:
+                    with self.subTest(f"{expected} not in {other}"):
+                        self.assertNotIn(expected, problems[other])
 
 
 class ReadmeParseTest(TempCase):

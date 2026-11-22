@@ -5,6 +5,22 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 22:30
+  summary: SVG の生文字列拒否のテストが別分岐で通る偽陽性を修正
+  details:
+    変更内容: >-
+      生文字列の拒否メッセージを「SVG に使えない構文」へ変え、属性値・style の分岐のメッセージと部分文字列で重ならないようにした。
+      拒否テストへ、各分岐の期待文字列が他の分岐のメッセージに含まれないことの自己検査と、DOCTYPE なしの ENTITY のケースを追加した。
+      SVG_RAW_FORBIDDEN の各項目（DOCTYPE・ENTITY・処理命令・CDATA・コメント）を一時的に外すと対応するテストだけが落ちることを確認し、元へ戻した
+    変更ファイル:
+      - scripts/build-pages.py
+      - tests/test_build_pages.py
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python -m unittest discover -s tests、build-pages.py の再生成と --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 36件すべて成功、各ゲート合格
 - date: 2026-11-22 22:00
   summary: SVG 検査の拒否テストの偽陽性・デッドコード・名前空間検査の誤検出を修正し、.gitignore を追加
   details:

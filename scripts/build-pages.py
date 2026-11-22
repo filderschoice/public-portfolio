@@ -105,7 +105,7 @@ def svg_problem(text):
     """SVG を XML として解析して検査し、問題の説明（無ければ None）を返す。"""
     found = SVG_RAW_FORBIDDEN.search(text)
     if found:
-        return f"禁止された記述 {found.group()!r}（DOCTYPE・ENTITY・処理命令・CDATA・コメント）があります"
+        return f"SVG に使えない構文 {found.group()!r}（DOCTYPE・ENTITY・処理命令・CDATA・コメント）があります"
     root = None
     try:
         for event, data in ET.iterparse(io.BytesIO(text.encode("utf-8")), events=("start-ns", "start")):
