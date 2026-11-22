@@ -16,3 +16,7 @@
 - ユーザーの決定を反映: デプロイは GitHub Actions を使わず端末から `gh-pages` ブランチへ push する方式とし、
   README に「公開ページの更新手順」を追記（BL-005 は不要となり削除、BL-006 の依存を解除）。
   repo は public にする。`.github/CODEOWNERS` を `* @filderschoice` に変更（sesami-wear・ikumemo と同じ形）
+- GitHub の repo 設定を適用（main のブランチ保護、脆弱性の非公開報告、Dependabot、Actions のトークンを読み取り専用、
+  説明文・topics・homepage、Wiki 無効化、マージ後のブランチ自動削除）。`gh-pages` を push して Pages を公開
+  （`https://filderschoice.github.io/public-portfolio/`、ビルド成功・HTTP 200）
+- 公開ページの掲載4件・Pages リンク3件を確認し、ユーザーの指示で BL-006（人手検証）を完了として削除。BACKLOG は空
