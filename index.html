@@ -3,36 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>公開ポートフォリオ</title>
+<style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--card:#fff;--text:#1f2328;--muted:#57606a;--border:#d0d7de;
+--link:#0550ae;--app-bg:#ddf4ff;--app-fg:#0a3069;--tool-bg:#fff1d6;--tool-fg:#5c3d00}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#161b22;--text:#e6edf3;--muted:#9da7b3;
+--border:#30363d;--link:#79c0ff;--app-bg:#10304f;--app-fg:#cae8ff;--tool-bg:#3a2a07;--tool-fg:#ffe0a3}}
+*{box-sizing:border-box}
+body{margin:0;padding:1.5rem 1rem;background:var(--bg);color:var(--text);
+font-family:system-ui,-apple-system,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;line-height:1.6}
+main{max-width:64rem;margin:0 auto}
+h1{font-size:1.6rem;margin:0 0 .5rem}
+.lead{color:var(--muted);margin:0 0 1.5rem}
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem 1.25rem;
+display:flex;flex-direction:column;gap:.5rem;overflow-wrap:anywhere}
+.card h2{font-size:1.2rem;margin:0}
+.card p{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;color:var(--muted);font-size:.9rem}
+.badge{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-weight:700;font-size:.85rem}
+.badge-app{background:var(--app-bg);color:var(--app-fg)}
+.badge-tool{background:var(--tool-bg);color:var(--tool-fg)}
+.links{margin-top:auto;display:flex;flex-wrap:wrap;gap:1rem}
+a{color:var(--link)}
+@media (max-width:40rem){.cards{grid-template-columns:minmax(0,1fr)}}
+</style>
 </head>
 <body>
+<main>
 <h1>公開ポートフォリオ</h1>
-<p>filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。</p>
-<ul>
-<li>
+<p class="lead">filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。</p>
+<ul class="cards">
+<li class="card">
 <h2>sesami-wear</h2>
-<p>アプリ / Kotlin / Wear OS</p>
+<div class="meta"><span class="badge badge-app">アプリ</span><span>Kotlin / Wear OS</span></div>
 <p>Pixel WatchなどのWear OSスマートウォッチからCANDY HOUSE Sesame 5（+ Hub 3）を施錠・解錠する非公式アプリ。タイルからのワンタップ操作とコンプリケーションでの状態表示に対応。</p>
-<p><a href="https://github.com/filderschoice/sesami-wear">repo</a> / <a href="https://filderschoice.github.io/sesami-wear/">Pages</a></p>
+<div class="links"><a href="https://github.com/filderschoice/sesami-wear">repo</a><a href="https://filderschoice.github.io/sesami-wear/">Pages</a></div>
 </li>
-<li>
+<li class="card">
 <h2>ikumemo</h2>
-<p>アプリ / Kotlin / Android</p>
+<div class="meta"><span class="badge badge-app">アプリ</span><span>Kotlin / Android</span></div>
 <p>話すだけで買い物メモ。買ったらスワイプで記録、カレンダーで振り返り。使い切りたい物は期限をお知らせするAndroidアプリ（アカウント・通信・広告なし）。</p>
-<p><a href="https://github.com/filderschoice/ikumemo">repo</a> / <a href="https://filderschoice.github.io/ikumemo/">Pages</a></p>
+<div class="links"><a href="https://github.com/filderschoice/ikumemo">repo</a><a href="https://filderschoice.github.io/ikumemo/">Pages</a></div>
 </li>
-<li>
+<li class="card">
 <h2>romcha</h2>
-<p>アプリ / Kotlin / Android</p>
+<div class="meta"><span class="badge badge-app">アプリ</span><span>Kotlin / Android</span></div>
 <p>Romcha（ロムチャ）— YouTube公式アプリと同期する、見るだけのフローティングチャットビューワー（Android）。</p>
-<p><a href="https://github.com/filderschoice/romcha">repo</a> / <a href="https://filderschoice.github.io/romcha/">Pages</a></p>
+<div class="links"><a href="https://github.com/filderschoice/romcha">repo</a><a href="https://filderschoice.github.io/romcha/">Pages</a></div>
 </li>
-<li>
+<li class="card">
 <h2>windows-devenv-setup</h2>
-<p>ツール / PowerShell / Windows</p>
+<div class="meta"><span class="badge badge-tool">ツール</span><span>PowerShell / Windows</span></div>
 <p>wingetとnpmでWindowsの開発環境を冪等に構築するPowerShellスクリプト。</p>
-<p><a href="https://github.com/filderschoice/windows-devenv-setup">repo</a></p>
+<div class="links"><a href="https://github.com/filderschoice/windows-devenv-setup">repo</a></div>
 </li>
 </ul>
+</main>
 </body>
 </html>
