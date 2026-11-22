@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; img-src &#x27;self&#x27;; style-src &#x27;unsafe-inline&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;">
 <title>公開ポートフォリオ</title>
 <style>
 :root{color-scheme:light dark;--bg:#f6f8fa;--card:#fff;--text:#1f2328;--muted:#57606a;--border:#d0d7de;
---link:#0550ae;--app-bg:#ddf4ff;--app-fg:#0a3069;--tool-bg:#fff1d6;--tool-fg:#5c3d00}
+--link:#0550ae;--ill-bg:#eaeef2;--app-bg:#ddf4ff;--app-fg:#0a3069;--tool-bg:#fff1d6;--tool-fg:#5c3d00}
 @media (prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#161b22;--text:#e6edf3;--muted:#9da7b3;
---border:#30363d;--link:#79c0ff;--app-bg:#10304f;--app-fg:#cae8ff;--tool-bg:#3a2a07;--tool-fg:#ffe0a3}}
+--border:#30363d;--ill-bg:#0d1117;--link:#79c0ff;--app-bg:#10304f;--app-fg:#cae8ff;--tool-bg:#3a2a07;--tool-fg:#ffe0a3}}
 *{box-sizing:border-box}
 body{margin:0;padding:1.5rem 1rem;background:var(--bg);color:var(--text);
 font-family:system-ui,-apple-system,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;line-height:1.6}
@@ -19,6 +20,10 @@ h1{font-size:1.6rem;margin:0 0 .5rem}
 .cards{list-style:none;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
 .card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem 1.25rem;
 display:flex;flex-direction:column;gap:.5rem;overflow-wrap:anywhere}
+.illust{margin:0;border:1px solid var(--border);border-radius:.5rem;background:var(--ill-bg);overflow:hidden}
+.illust img{display:block;width:100%;height:auto}
+.note{color:var(--muted);font-size:.8rem}
+.release{color:var(--muted);font-size:.9rem}
 .card h2{font-size:1.2rem;margin:0}
 .card p{margin:0}
 .meta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;color:var(--muted);font-size:.9rem}
@@ -33,30 +38,42 @@ a{color:var(--link)}
 <body>
 <main>
 <h1>公開ポートフォリオ</h1>
-<p class="lead">filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。</p>
+<p class="lead">filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。掲載のイラストは内容をイメージしやすくするための模式図で、実際の画面ではありません。</p>
 <ul class="cards">
 <li class="card">
+<div class="illust"><img src="illustrations/sesami-wear.svg" alt="sesami-wear の画面イメージ（簡易イラスト。実際の画面ではありません）" width="400" height="300"></div>
+<p class="note">イメージ図。実際の画面ではありません</p>
 <h2>sesami-wear</h2>
 <div class="meta"><span class="badge badge-app">アプリ</span><span>Kotlin / Wear OS</span></div>
 <p>Pixel WatchなどのWear OSスマートウォッチからCANDY HOUSE Sesame 5（+ Hub 3）を施錠・解錠する非公式アプリ。タイルからのワンタップ操作とコンプリケーションでの状態表示に対応。</p>
+<p class="release">最新リリース <a href="https://github.com/filderschoice/sesami-wear/releases/tag/v0.17.0">v0.17.0</a>（2026-11-21・プレリリース）</p>
 <div class="links"><a href="https://github.com/filderschoice/sesami-wear">repo</a><a href="https://filderschoice.github.io/sesami-wear/">Pages</a></div>
 </li>
 <li class="card">
+<div class="illust"><img src="illustrations/ikumemo.svg" alt="ikumemo の画面イメージ（簡易イラスト。実際の画面ではありません）" width="400" height="300"></div>
+<p class="note">イメージ図。実際の画面ではありません</p>
 <h2>ikumemo</h2>
 <div class="meta"><span class="badge badge-app">アプリ</span><span>Kotlin / Android</span></div>
 <p>話すだけで買い物メモ。買ったらスワイプで記録、カレンダーで振り返り。使い切りたい物は期限をお知らせするAndroidアプリ（アカウント・通信・広告なし）。</p>
+<p class="release">最新リリース -</p>
 <div class="links"><a href="https://github.com/filderschoice/ikumemo">repo</a><a href="https://filderschoice.github.io/ikumemo/">Pages</a></div>
 </li>
 <li class="card">
+<div class="illust"><img src="illustrations/romcha.svg" alt="romcha の画面イメージ（簡易イラスト。実際の画面ではありません）" width="400" height="300"></div>
+<p class="note">イメージ図。実際の画面ではありません</p>
 <h2>romcha</h2>
 <div class="meta"><span class="badge badge-app">アプリ</span><span>Kotlin / Android</span></div>
 <p>Romcha（ロムチャ）— YouTube公式アプリと同期する、見るだけのフローティングチャットビューワー（Android）。</p>
+<p class="release">最新リリース <a href="https://github.com/filderschoice/romcha/releases/tag/v1.2.0">v1.2.0</a>（2026-10-15・正式）</p>
 <div class="links"><a href="https://github.com/filderschoice/romcha">repo</a><a href="https://filderschoice.github.io/romcha/">Pages</a></div>
 </li>
 <li class="card">
+<div class="illust"><img src="illustrations/windows-devenv-setup.svg" alt="windows-devenv-setup の画面イメージ（簡易イラスト。実際の画面ではありません）" width="400" height="300"></div>
+<p class="note">イメージ図。実際の画面ではありません</p>
 <h2>windows-devenv-setup</h2>
 <div class="meta"><span class="badge badge-tool">ツール</span><span>PowerShell / Windows</span></div>
 <p>wingetとnpmでWindowsの開発環境を冪等に構築するPowerShellスクリプト。</p>
+<p class="release">最新リリース -</p>
 <div class="links"><a href="https://github.com/filderschoice/windows-devenv-setup">repo</a></div>
 </li>
 </ul>
