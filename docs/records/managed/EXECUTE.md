@@ -5,6 +5,26 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 19:00
+  summary: ポートフォリオ更新の手順を固定するプロジェクト用 Skill portfolio-update を追加
+  details:
+    変更内容: >-
+      .claude/skills/portfolio-update/SKILL.md を新規追加した（frontmatter は name と description のみ、model は指定しない）。
+      更新依頼の振り分け（最新リリース・掲載 repo の追加と修正・イラスト）、対話モードの手順（差分案の確認→--apply→
+      build-pages.py の再生成と --check→品質ゲート→コミット案の提示）、自律ループ内の手順（実 API を呼ばず --from-json のみ）、
+      push と gh-pages への反映はユーザーが行うことを記述した。詳細な規則は README を参照させ、複製しない。
+      スキルは手順の記述のみで、権限・設定・hooks は変えていない。「守る側」に近いため、diff-reviewer での点検をオーケストレータへ依頼する
+    変更ファイル:
+      - .claude/skills/portfolio-update/SKILL.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      markdownlint-cli2（対象 30 ファイルが git ls-files の件数と一致）、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - いずれも合格
+    関連ID:
+      - BL-012
 - date: 2026-11-22 18:00
   summary: 最新リリース表の更新補助スクリプト propose-releases.py を追加
   details:
