@@ -6,33 +6,69 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 ## 公開中のアプリ・ツール
 
 <!-- PORTFOLIO:BEGIN -->
-| 名前 | 説明 | 種別 | プラットフォーム/言語 | repo | Pages |
-| --- | --- | --- | --- | --- | --- |
-| sesami-wear | Pixel WatchなどのWear OSスマートウォッチからCANDY HOUSE Sesame 5（+ Hub 3）を施錠・解錠する非公式アプリ。タイルからのワンタップ操作とコンプリケーションでの状態表示に対応。 | アプリ | Kotlin / Wear OS | <https://github.com/filderschoice/sesami-wear> | <https://filderschoice.github.io/sesami-wear/> |
-| ikumemo | 話すだけで買い物メモ。買ったらスワイプで記録、カレンダーで振り返り。使い切りたい物は期限をお知らせするAndroidアプリ（アカウント・通信・広告なし）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/ikumemo> | <https://filderschoice.github.io/ikumemo/> |
-| romcha | Romcha（ロムチャ）— YouTube公式アプリと同期する、見るだけのフローティングチャットビューワー（Android）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/romcha> | <https://filderschoice.github.io/romcha/> |
-| windows-devenv-setup | wingetとnpmでWindowsの開発環境を冪等に構築するPowerShellスクリプト。 | ツール | PowerShell / Windows | <https://github.com/filderschoice/windows-devenv-setup> | - |
+| 名前 | 説明 | 種別 | プラットフォーム/言語 | repo | Pages | イラスト |
+| --- | --- | --- | --- | --- | --- | --- |
+| sesami-wear | Pixel WatchなどのWear OSスマートウォッチからCANDY HOUSE Sesame 5（+ Hub 3）を施錠・解錠する非公式アプリ。タイルからのワンタップ操作とコンプリケーションでの状態表示に対応。 | アプリ | Kotlin / Wear OS | <https://github.com/filderschoice/sesami-wear> | <https://filderschoice.github.io/sesami-wear/> | sesami-wear |
+| ikumemo | 話すだけで買い物メモ。買ったらスワイプで記録、カレンダーで振り返り。使い切りたい物は期限をお知らせするAndroidアプリ（アカウント・通信・広告なし）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/ikumemo> | <https://filderschoice.github.io/ikumemo/> | ikumemo |
+| romcha | Romcha（ロムチャ）— YouTube公式アプリと同期する、見るだけのフローティングチャットビューワー（Android）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/romcha> | <https://filderschoice.github.io/romcha/> | romcha |
+| windows-devenv-setup | wingetとnpmでWindowsの開発環境を冪等に構築するPowerShellスクリプト。 | ツール | PowerShell / Windows | <https://github.com/filderschoice/windows-devenv-setup> | - | windows-devenv-setup |
 <!-- PORTFOLIO:END -->
+
+## 最新リリース
+
+各アプリの最新リリースです（種類を問わず最新の1件。プレリリースは種類で区別します）。公開ページのカードへ
+`repo` 列の URL に `/releases/tag/<版>` を付けたリンクで表示するため、リリースの URL はここに書きません。
+リリースが無い項目は、3列とも `-` にします。
+
+<!-- RELEASES:BEGIN -->
+| 名前 | 最新リリース | 公開日 | 種類 |
+| --- | --- | --- | --- |
+| sesami-wear | v0.17.0 | 2026-11-21 | プレリリース |
+| ikumemo | - | - | - |
+| romcha | v1.2.0 | 2026-10-15 | 正式 |
+| windows-devenv-setup | - | - | - |
+<!-- RELEASES:END -->
 
 ## 運用方針
 
 - 掲載内容の正本はこの README の表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）です。
 - 公開ページ（`site/index.html`）は、この表から `python scripts/build-pages.py` で生成します。
   整合の確認は `python scripts/build-pages.py --check` です。
+- スクリプトの単体テストは `python -m unittest discover -s tests` で実行します（標準ライブラリのみ。ネットワークへ接続せず、
+  一時ディレクトリだけに書き込みます）。
 - Pages が無い項目は、Pages 列を「-」にします。
+- 最新リリース表は、`python scripts/propose-releases.py --live` で更新します（`--live` を明示したときだけ接続し、
+  対話でユーザーが更新を依頼したときに限ります）。公開 REST API（認証なし・接続先は
+  api.github.com 固定）から各 repo の最新リリース（draft を除く先頭1件）を取得し、RELEASES 表の差分案を表示します。
+  差分案を確認し、問題なければ `--live --apply` で再実行すると RELEASES 表だけが書き換わります。
+  その後 `python scripts/build-pages.py` で再生成し、`--check` で一致を確認します。
+  `--from-json <ファイル>` で API 応答の保存ファイルを読めば、ネットワークへ接続せずに同じ処理を行えます
+  （`--live` も `--from-json` も無いときは、接続せずに案内を出して終了コード2になります）
+  （形式は `{"<repo 名>": <releases API の応答の配列>}`）。リリースが無い repo は空配列で `-` になり、
+  応答が不正なとき・掲載表の repo が `https://github.com/filderschoice/<repo>` の形でないときはエラー終了します。
+- イラスト列は、各アプリの内容をイメージしやすくする簡易イラストの ID です。実画面ではなく README の説明に基づく
+  模式図で、固定の SVG を `site/illustrations/<ID>.svg` に置きます。イラストが無い項目は「-」にします。
 
 ## 掲載するリポジトリを追加する手順
 
 公開する repo が増えたら、次の手順で追加します。
 
-1. 掲載表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）へ1行を追加する。列は 名前・説明・種別・プラットフォーム/言語・repo・Pages の順
-2. 種別は `アプリ` か `ツール` のどちらかだけを書く
-3. プラットフォーム/言語は `Kotlin / Android` のように「言語 / 対象環境」で書く
-4. repo と Pages の URL は `<https://...>` の形式で書く。https 以外はエラーになる
-5. Pages が無い場合は、Pages 列を `-` にする（公開ページにも Pages リンクを出さない）
-6. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
-7. 説明など、セルの中に `|` は書けない（列数不正としてエラー終了する）
-8. `README.md` と `site/index.html` を、あわせてコミットする
+1. 掲載表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）へ1行を追加する。列は 名前・説明・種別・プラットフォーム/言語・repo・Pages・イラスト の順
+2. 最新リリース表（`RELEASES:BEGIN` と `RELEASES:END` の間）へも同じ名前の行を1行追加する（リリースが無ければ `-` の3列）。
+   名前の過不足・重複はエラーになる
+3. 種別は `アプリ` か `ツール` のどちらかだけを書く
+4. プラットフォーム/言語は `Kotlin / Android` のように「言語 / 対象環境」で書く
+5. repo と Pages の URL は `<https://...>` の形式で書く。https 以外はエラーになる
+6. Pages が無い場合は、Pages 列を `-` にする（公開ページにも Pages リンクを出さない）
+7. イラストを付ける場合は、手書きの SVG を `site/illustrations/<ID>.svg` に置き、イラスト列へ ID（英数字とハイフンのみ）を書く。
+   付けない場合は `-` にする。SVG は XML として解析して検査し、DOCTYPE・ENTITY・処理命令・CDATA・XML コメント（`<!--`）、許可リスト外の要素・属性
+   （script・foreignObject・`on` で始まる属性・href・xlink など）、style 内の `url(`・`@import`・エスケープ・expression、
+   SVG の名前空間以外の名前空間宣言（`xmlns:xlink` など）を書けない。存在しない ID・不正な ID・禁止された記述はエラーになる。
+   描くのは説明に出てくる要素だけにし（品目などの例示は除く）、
+   「実際の画面ではありません」の注記を SVG の title に入れ、ダークモードでも読める配色にする
+8. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
+9. 説明など、セルの中に `|` は書けない（列数不正としてエラー終了する）
+10. `README.md`・`site/index.html`・追加した SVG を、あわせてコミットする
 
 ## 公開ページの更新手順
 

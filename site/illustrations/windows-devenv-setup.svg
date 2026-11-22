@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t d">
+<title id="t">windows-devenv-setup のイメージ図（実際の画面ではありません）</title>
+<desc id="d">ターミナル窓に winget と npm のインストール実行行が順に流れ、各行に完了印が付き、最後に完了が表示される模式図。</desc>
+<style>
+svg{--bg:#eaeef2;--dev:#2b3139;--scr:#ffffff;--pan:#f0f3f6;--tx:#1f2328;--mu:#57606a;--ac:#0969da;--acf:#ffffff;--ok:#1a7f37;--wn:#9a6700;--ln:#d0d7de}
+@media (prefers-color-scheme:dark){svg{--bg:#0d1117;--dev:#6e7681;--scr:#0b0f14;--pan:#1c2128;--tx:#e6edf3;--mu:#9da7b3;--ac:#58a6ff;--acf:#0b0f14;--ok:#3fb950;--wn:#d29922;--ln:#30363d}}
+.bg{fill:var(--bg)}.dev{fill:var(--dev)}.scr{fill:var(--scr)}
+.sm{fill:var(--mu);font:11px system-ui,sans-serif}
+.ac{fill:var(--ac)}.ok{fill:var(--ok)}.oks{fill:none;stroke:var(--ok);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.wn{fill:var(--wn)}.bar{fill:var(--ln)}
+.mono{font:600 13px ui-monospace,Consolas,monospace;fill:var(--tx)}.pr{fill:var(--ac)}
+</style>
+<rect class="bg" width="400" height="300"/>
+<rect class="dev" x="30" y="30" width="340" height="236" rx="12"/><rect class="scr" x="34" y="58" width="332" height="204" rx="8"/><circle class="wn" cx="50" cy="44" r="5"/><circle class="ok" cx="68" cy="44" r="5"/><circle class="ac" cx="86" cy="44" r="5"/><text class="mono" x="50" y="90"><tspan class="pr">&gt;</tspan> winget install ...</text><path class="oks" d="M338 84l5 5 10-11"/><text class="mono" x="50" y="122"><tspan class="pr">&gt;</tspan> winget install ...</text><path class="oks" d="M338 116l5 5 10-11"/><text class="mono" x="50" y="154"><tspan class="pr">&gt;</tspan> npm install -g ...</text><path class="oks" d="M338 148l5 5 10-11"/><text class="mono" x="50" y="186"><tspan class="pr">&gt;</tspan> npm install -g ...</text><rect class="bar" x="50" y="198" width="150" height="6" rx="3"/><rect class="ac" x="50" y="198" width="96" height="6" rx="3"/><rect class="ok" x="50" y="222" width="90" height="26" rx="13" style="opacity:.2"/><text class="mono" x="95" y="240" text-anchor="middle" style="fill:var(--tx)">完了</text><text class="sm" x="200" y="288" text-anchor="middle">イメージ図（実際の画面ではありません）</text>
+</svg>

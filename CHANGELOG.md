@@ -4,6 +4,30 @@
 
 ## 2026-11-22
 
+- SVG の生文字列拒否のテストが別の分岐で通る偽陽性を修正（拒否メッセージの固有化と、分岐間でメッセージが重ならない自己検査の追加）
+- 再点検の指摘の修正: SVG 検査の拒否テストを想定の分岐の理由まで確かめる形へ作り直し、名前空間の検査を iterparse の start-ns へ変更
+  （本文中の xmlns の誤検出を解消）、XML コメントを拒否、デッドコードを削除、`.gitignore`（`__pycache__/`・`*.pyc`）を追加
+- scripts/ 配下の検証コード（build-pages.py・propose-releases.py）の単体テストを tests/ へ追加（unittest、35件）。
+  品質ゲート表へ載せるかの判断を BL-013（要確認）として起票
+- レビュー指摘の修正: SVG 検査を XML 解析による許可リスト方式へ変更、版に + を許可、掲載表の名前重複と repo・Pages URL の ?・# の検査、
+  CSP へ base-uri・form-action を追加、propose-releases.py は --live を明示したときだけ接続する仕様へ変更、
+  SVG の具体名を汎用化し薄い文字色を AA（4.5:1）以上へ変更、Skill の scan-secrets の使い方を品質ゲート定義に合わせた
+- ポートフォリオ更新の手順を固定するプロジェクト用 Skill portfolio-update を追加（BL-012）。対話モードの手順と
+  自律ループ内の制約（実 API を呼ばず --from-json のみ、push はユーザー）を記述
+- 最新リリース表の更新補助スクリプト scripts/propose-releases.py を追加（BL-010）。公開 REST API（認証なし）または
+  --from-json の保存ファイルから差分案を出し、--apply で RELEASES 表だけを書き換える。README・DESIGN の更新手順を反映
+- README へ最新リリース表を追加し、公開ページのカードへ最新リリース（版・日付・種類、リンク付き）を表示。
+  build-pages.py へ表の検証を追加（BL-009）
+- ユーザーの決定を反映: 最新リリースの取得は gh ではなく公開 REST API（認証なし）を urllib で GET する補助スクリプト
+  propose-releases.py を作る方向とし、BL-010 を要確認から未着手へ改めた。更新依頼の手順を固定する Skill
+  portfolio-update を BL-012 として起票し、BL-011 の依存と完了条件を更新
+- README の掲載表へイラスト列を追加し、公開ページのカードへ簡易イラストと「実際の画面ではありません」の注記を表示。
+  build-pages.py へイラストの ID・実在・禁止記述の検査と CSP の meta を追加（BL-008）
+- 掲載4件の簡易イラスト（SVG）を `site/illustrations/` へ追加し、`.gitattributes` で LF に固定（BL-007）。
+  実際の画面ではない模式図で、ダークモードに対応
+- 公開ページへ簡易イラストと最新リリース情報を加える作業計画を `docs/records/managed/BACKLOG.md` へ起票
+  （BL-007〜BL-011）。SVG 資産の追加（BL-007）、イラスト列と表示（BL-008）、最新リリース表と表示（BL-009）、
+  gh を使うリリース取得の補助スクリプトの要否（BL-010）は要確認、実ブラウザでの見た目確認と gh-pages への反映（BL-011）は人手検証
 - 公開ポートフォリオ（README.md を正本とし GitHub Pages へ公開）の作業計画を
   `docs/records/managed/BACKLOG.md` へ起票（BL-001〜BL-006）。ワークフロー追加（BL-005）は要確認、
   Pages の有効化と初回デプロイ（BL-006）は人手検証として扱う
@@ -16,3 +40,7 @@
 - ユーザーの決定を反映: デプロイは GitHub Actions を使わず端末から `gh-pages` ブランチへ push する方式とし、
   README に「公開ページの更新手順」を追記（BL-005 は不要となり削除、BL-006 の依存を解除）。
   repo は public にする。`.github/CODEOWNERS` を `* @filderschoice` に変更（sesami-wear・ikumemo と同じ形）
+- GitHub の repo 設定を適用（main のブランチ保護、脆弱性の非公開報告、Dependabot、Actions のトークンを読み取り専用、
+  説明文・topics・homepage、Wiki 無効化、マージ後のブランチ自動削除）。`gh-pages` を push して Pages を公開
+  （`https://filderschoice.github.io/public-portfolio/`、ビルド成功・HTTP 200）
+- 公開ページの掲載4件・Pages リンク3件を確認し、ユーザーの指示で BL-006（人手検証）を完了として削除。BACKLOG は空

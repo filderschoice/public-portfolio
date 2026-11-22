@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t d">
+<title id="t">sesami-wear のイメージ図（実際の画面ではありません）</title>
+<desc id="d">丸いウォッチ画面に施錠と解錠のタイル（ワンタップのボタン）が並び、もう1つのウォッチ文字盤のコンプリケーションが施錠中の状態を示す模式図。</desc>
+<style>
+svg{--bg:#eaeef2;--dev:#2b3139;--scr:#ffffff;--pan:#f0f3f6;--tx:#1f2328;--mu:#57606a;--ac:#0969da;--acf:#ffffff;--ok:#1a7f37;--wn:#9a6700;--ln:#d0d7de}
+@media (prefers-color-scheme:dark){svg{--bg:#0d1117;--dev:#6e7681;--scr:#0b0f14;--pan:#1c2128;--tx:#e6edf3;--mu:#9da7b3;--ac:#58a6ff;--acf:#0b0f14;--ok:#3fb950;--wn:#d29922;--ln:#30363d}}
+.bg{fill:var(--bg)}.dev{fill:var(--dev)}.scr{fill:var(--scr)}.pan{fill:var(--pan);stroke:var(--ln);stroke-width:1.5}
+.big{fill:var(--tx);font:600 26px system-ui,sans-serif}.sm{fill:var(--mu);font:11px system-ui,sans-serif}
+.ac{fill:var(--ac)}.acs{fill:none;stroke:var(--ac);stroke-width:3;stroke-linecap:round}.ok{fill:var(--ok)}.oks{fill:none;stroke:var(--ok);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.f{fill:var(--acf)}.fs{fill:none;stroke:var(--acf);stroke-width:3;stroke-linecap:round}
+</style>
+<rect class="bg" width="400" height="300"/>
+<g transform="translate(120 150) scale(.82) translate(-120 -150)"><rect class="dev" x="85" y="14" width="70" height="30" rx="8"/><rect class="dev" x="85" y="256" width="70" height="30" rx="8"/><circle class="dev" cx="120" cy="150" r="104"/><circle class="scr" cx="120" cy="150" r="92"/><text class="sm" x="120" y="76" text-anchor="middle">タイル</text><rect class="ac" x="62" y="84" width="116" height="62" rx="31"/><rect class="f" x="108" y="112" width="24" height="18" rx="3"/><path class="fs" d="M113 112v-6a7 7 0 0 1 14 0v6"/><rect class="pan" x="62" y="154" width="116" height="62" rx="31"/><rect class="ac" x="108" y="182" width="24" height="18" rx="3"/><path class="acs" d="M113 182v-6a7 7 0 0 1 14 -2"/></g>
+<g transform="translate(300 150) scale(.82) translate(-300 -150)"><rect class="dev" x="265" y="14" width="70" height="30" rx="8"/><rect class="dev" x="265" y="256" width="70" height="30" rx="8"/><circle class="dev" cx="300" cy="150" r="104"/><circle class="scr" cx="300" cy="150" r="92"/><text class="sm" x="300" y="76" text-anchor="middle">コンプリケーション</text><text class="big" x="300" y="122" text-anchor="middle">9:41</text><circle class="pan" cx="300" cy="172" r="30"/><circle class="ok" cx="300" cy="172" r="24" style="opacity:.2"/><rect class="ok" x="291" y="172" width="18" height="14" rx="3"/><path class="oks" d="M295 172v-5a5 5 0 0 1 10 0v5"/><text class="sm" x="300" y="222" text-anchor="middle">施錠中</text></g>
+<text class="sm" x="200" y="296" text-anchor="middle">イメージ図（実際の画面ではありません）</text>
+</svg>
