@@ -91,7 +91,7 @@
   propose-releases.py は応答の検証・`--from-json`・`--apply`（表だけの更新・冪等・CRLF・置換失敗時に README を壊さない）・
   リダイレクト検証・ヘッダーとホストの固定・`--live` なしで接続しないことを検証する。ネットワークへは接続せず
   （接続する経路は mock）、書き込みは一時ディレクトリだけで、リポジトリのファイルは変えない
-- 品質ゲート表（`CLAUDE.md`）の単体テスト行は `replace-me` のまま。ゲートへ載せるかは BACKLOG の BL-013（要確認）で判断する
+- 品質ゲート表（`CLAUDE.md`）の単体テスト行は `python -m unittest discover -s tests`（全件成功）。ユーザーの決定で採用した（BL-013）
 
 ## 実装制約
 

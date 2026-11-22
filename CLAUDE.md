@@ -34,7 +34,7 @@ Claude Code 固有の差分と追加規約です。全エージェント共通�
 | --- | --- | --- |
 | フォーマット/静的解析 | `replace-me`（例 `npm run lint` / `cargo fmt --check && cargo clippy` / `./gradlew ktlintCheck`） | 終了コード0、指摘0件 |
 | 型検査 | `replace-me`（例 `npx tsc --noEmit` / `./gradlew compileKotlin`） | 終了コード0 |
-| 単体テスト | `replace-me`（例 `npm test` / `cargo test` / `./gradlew test`） | 全件成功 |
+| 単体テスト | `python -m unittest discover -s tests`（標準ライブラリのみ。ネットワークへ接続せず、一時ディレクトリだけに書き込む） | 全件成功（終了コード0） |
 | 脆弱性チェック | `replace-me`（例 `npm audit` / `cargo audit`） | 新規の高危険度の指摘が0件 |
 | Markdown の静的解析 | `npx markdownlint-cli2 "**/*.md" --config .markdownlint-cli2.yaml` | `Summary: 0 issues`、かつ出力の `Linting: N files` が `git ls-files --cached --others --exclude-standard "*.md"` の件数と一致（対象漏れの検出） |
 | 記録ファイルの検証 | `python scripts/validate-records.py`（PyYAMLが必要） | 終了コード0 |
