@@ -20,3 +20,15 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 - 公開ページ（`site/index.html`）は、この表から `python scripts/build-pages.py` で生成します。
   整合の確認は `python scripts/build-pages.py --check` です。
 - Pages が無い項目は、Pages 列を「-」にします。
+
+## 掲載するリポジトリを追加する手順
+
+公開する repo が増えたら、次の手順で追加します。
+
+1. 掲載表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）へ1行を追加する。列は 名前・説明・種別・プラットフォーム/言語・repo・Pages の順
+2. 種別は `アプリ` か `ツール` のどちらかだけを書く
+3. プラットフォーム/言語は `Kotlin / Android` のように「言語 / 対象環境」で書く
+4. repo と Pages の URL は `<https://...>` の形式で書く。https 以外はエラーになる
+5. Pages が無い場合は、Pages 列を `-` にする（公開ページにも Pages リンクを出さない）
+6. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
+7. `README.md` と `site/index.html` を、あわせてコミットする

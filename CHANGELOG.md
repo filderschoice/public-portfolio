@@ -10,3 +10,4 @@
 - ポートフォリオの正本 README.md（掲載表4件）を追加し、DESIGN.md へ方針を記載（BL-001）
 - 公開ページ生成スクリプト scripts/build-pages.py と生成物 site/index.html を追加（BL-002）
 - 公開ページをカード表示・レスポンシブ・ダークモードに対応（BL-003）
+- README に掲載リポジトリの追加手順を追記（BL-004）

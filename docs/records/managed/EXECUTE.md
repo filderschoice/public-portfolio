@@ -5,6 +5,25 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 13:30
+  summary: README に掲載リポジトリの追加手順を追記
+  details:
+    変更内容: >-
+      README.md へ「掲載するリポジトリを追加する手順」（表への1行追加、種別・プラットフォームの書き方、Pages が無い場合、
+      再生成と --check、コミット対象）を追記した。架空の1行を一時追加して手順どおりに生成と --check が成功することを確かめ、
+      行と生成物を元に戻した
+    変更ファイル:
+      - README.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      架空行の追加後に python scripts/build-pages.py と --check、復元後に --check、markdownlint-cli2、
+      validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 架空行で生成と --check が成功し Pages 列が - の行は Pages リンクを出さず、復元後も --check は一致、各ゲート合格
+    関連ID:
+      - BL-004
 - date: 2026-11-22 13:00
   summary: 公開ページをカード表示・レスポンシブ・ダークモードに対応
   details:
