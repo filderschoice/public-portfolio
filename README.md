@@ -33,3 +33,14 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 6. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
 7. 説明など、セルの中に `|` は書けない（列数不正としてエラー終了する）
 8. `README.md` と `site/index.html` を、あわせてコミットする
+
+## 公開ページの更新手順
+
+公開は GitHub Actions を使わず、端末から公開用ブランチ `gh-pages` へ push して行います。
+`README.md`・`scripts/build-pages.py`・`site/` のいずれかが変わったときだけ実施します。
+
+1. 規定ブランチへ変更をマージした状態で、`python scripts/build-pages.py --check` が成功することを確認する
+   （失敗したら `python scripts/build-pages.py` で再生成し、コミットしてからやり直す）
+2. `git subtree push --prefix site origin gh-pages` で、`site/` の内容だけを `gh-pages` ブランチの直下へ反映する
+   （`site/` に変更が無ければ新しいコミットは作られない）
+3. 初回のみ、GitHub の Settings → Pages で公開元を「`gh-pages` ブランチの `/ (root)`」に設定する

@@ -13,3 +13,6 @@
 - README に掲載リポジトリの追加手順を追記（BL-004）
 - レビュー指摘の修正として .gitattributes で site/index.html を LF に固定し、README・DESIGN の記述を整理
 - BACKLOG の BL-005 へ CODEOWNERS のプレースホルダの確認事項、BL-006 へ Pages 公開元の注記を追記
+- ユーザーの決定を反映: デプロイは GitHub Actions を使わず端末から `gh-pages` ブランチへ push する方式とし、
+  README に「公開ページの更新手順」を追記（BL-005 は不要となり削除、BL-006 の依存を解除）。
+  repo は public にする。`.github/CODEOWNERS` を `* @filderschoice` に変更（sesami-wear・ikumemo と同じ形）
