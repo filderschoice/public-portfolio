@@ -4,6 +4,9 @@
 
 ## 2026-11-22
 
+- レビュー指摘の修正: SVG 検査を XML 解析による許可リスト方式へ変更、版に + を許可、掲載表の名前重複と repo・Pages URL の ?・# の検査、
+  CSP へ base-uri・form-action を追加、propose-releases.py は --live を明示したときだけ接続する仕様へ変更、
+  SVG の具体名を汎用化し薄い文字色を AA（4.5:1）以上へ変更、Skill の scan-secrets の使い方を品質ゲート定義に合わせた
 - ポートフォリオ更新の手順を固定するプロジェクト用 Skill portfolio-update を追加（BL-012）。対話モードの手順と
   自律ループ内の制約（実 API を呼ばず --from-json のみ、push はユーザー）を記述
 - 最新リリース表の更新補助スクリプト scripts/propose-releases.py を追加（BL-010）。公開 REST API（認証なし）または

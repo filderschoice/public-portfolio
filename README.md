@@ -35,11 +35,13 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 - 公開ページ（`site/index.html`）は、この表から `python scripts/build-pages.py` で生成します。
   整合の確認は `python scripts/build-pages.py --check` です。
 - Pages が無い項目は、Pages 列を「-」にします。
-- 最新リリース表は、`python scripts/propose-releases.py` で更新します。公開 REST API（認証なし・接続先は
+- 最新リリース表は、`python scripts/propose-releases.py --live` で更新します（`--live` を明示したときだけ接続し、
+  対話でユーザーが更新を依頼したときに限ります）。公開 REST API（認証なし・接続先は
   api.github.com 固定）から各 repo の最新リリース（draft を除く先頭1件）を取得し、RELEASES 表の差分案を表示します。
-  差分案を確認し、問題なければ `--apply` を付けて再実行すると RELEASES 表だけが書き換わります。
+  差分案を確認し、問題なければ `--live --apply` で再実行すると RELEASES 表だけが書き換わります。
   その後 `python scripts/build-pages.py` で再生成し、`--check` で一致を確認します。
   `--from-json <ファイル>` で API 応答の保存ファイルを読めば、ネットワークへ接続せずに同じ処理を行えます
+  （`--live` も `--from-json` も無いときは、接続せずに案内を出して終了コード2になります）
   （形式は `{"<repo 名>": <releases API の応答の配列>}`）。リリースが無い repo は空配列で `-` になり、
   応答が不正なとき・掲載表の repo が `https://github.com/filderschoice/<repo>` の形でないときはエラー終了します。
 - イラスト列は、各アプリの内容をイメージしやすくする簡易イラストの ID です。実画面ではなく README の説明に基づく
@@ -57,9 +59,10 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 5. repo と Pages の URL は `<https://...>` の形式で書く。https 以外はエラーになる
 6. Pages が無い場合は、Pages 列を `-` にする（公開ページにも Pages リンクを出さない）
 7. イラストを付ける場合は、手書きの SVG を `site/illustrations/<ID>.svg` に置き、イラスト列へ ID（英数字とハイフンのみ）を書く。
-   付けない場合は `-` にする。SVG には script・foreignObject・`on` で始まる属性・href・`url(`・`@import`・外部 URL を
-   書けない（SVG を単体で表示するのに必須の `xmlns="http://www.w3.org/2000/svg"` だけは例外）。
-   存在しない ID・不正な ID・禁止された記述はエラーになる。描くのは説明に出てくる要素だけにし、
+   付けない場合は `-` にする。SVG は XML として解析して検査し、DOCTYPE・ENTITY・処理命令・CDATA、許可リスト外の要素・属性
+   （script・foreignObject・`on` で始まる属性・href・xlink など）、style 内の `url(`・`@import`・エスケープ・expression、
+   SVG の名前空間以外の xmlns を書けない。存在しない ID・不正な ID・禁止された記述はエラーになる。
+   描くのは説明に出てくる要素だけにし（品目などの例示は除く）、
    「実際の画面ではありません」の注記を SVG の title に入れ、ダークモードでも読める配色にする
 8. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
 9. 説明など、セルの中に `|` は書けない（列数不正としてエラー終了する）

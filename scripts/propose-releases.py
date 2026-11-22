@@ -2,15 +2,17 @@
 """README.md の掲載表の各 repo の最新リリースを調べ、RELEASES 表の置き換え案を出す（標準ライブラリのみ）。
 
 使い方:
-  python scripts/propose-releases.py                       # 公開 REST API から取得し、差分案を標準出力へ出す
-  python scripts/propose-releases.py --apply               # 差分案どおりに README の RELEASES 表だけを書き換える
+  python scripts/propose-releases.py --live                # 公開 REST API から取得し、差分案を標準出力へ出す
+  python scripts/propose-releases.py --live --apply        # 差分案どおりに README の RELEASES 表だけを書き換える
   python scripts/propose-releases.py --from-json FILE      # API 応答の保存ファイルを読む（ネットワークへ接続しない）
+
+--live も --from-json も無いときは、接続せずに案内を出して終了コード2で終わる（--live と --from-json は同時に指定できない）。
 
 --from-json の形式: {"<repo 名>": <releases API の応答（配列）>, ...}。掲載表の全 repo のキーが必要。
 
 終了コード: 0 = 正常（差分の有無を問わない）、2 = 不正な入力・取得失敗。
 接続先は https://api.github.com 固定（資格情報・トークンは使わない。リダイレクト先も検証する）。
-実 API を呼ぶのは、ユーザーが対話で更新を依頼したときに限る（自律ループ内では --from-json だけを使う）。
+実 API を呼ぶのは --live を明示したときだけで、ユーザーが対話で更新を依頼したときに限る（自律ループ内では --from-json だけを使う）。
 """
 import argparse
 import datetime
@@ -40,7 +42,7 @@ TIMEOUT_SEC = 10
 MAX_BYTES = 1024 * 1024
 MAX_REDIRECTS = 3
 USER_AGENT = "portfolio-release-proposer/1.0"
-VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 DATE_TIME = re.compile(r"^(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$")
 REPO_URL = re.compile(r"^https://github\.com/" + re.escape(OWNER) + r"/([A-Za-z0-9][A-Za-z0-9._-]*)$")
 
@@ -136,7 +138,7 @@ def pick_release(repo, data):
             continue
         tag = item.get("tag_name")
         if not isinstance(tag, str) or not VERSION.fullmatch(tag):
-            raise ProposeError(f"{repo} の版が不正です（英数と . _ - のみ、先頭は英数）: {tag!r}")
+            raise ProposeError(f"{repo} の版が不正です（英数と . _ + - のみ、先頭は英数）: {tag!r}")
         published = item.get("published_at")
         m = DATE_TIME.fullmatch(published) if isinstance(published, str) else None
         if not m:
@@ -224,8 +226,14 @@ def run(args):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--apply", action="store_true", help="差分案を README の RELEASES 表へ反映する")
-    ap.add_argument("--from-json", metavar="FILE", help="API 応答の保存ファイルを読む（ネットワークへ接続しない）")
+    src = ap.add_mutually_exclusive_group()
+    src.add_argument("--live", action="store_true", help="公開 REST API へ接続して取得する（明示したときだけ接続する）")
+    src.add_argument("--from-json", metavar="FILE", help="API 応答の保存ファイルを読む（ネットワークへ接続しない）")
     args = ap.parse_args()
+    if not args.live and not args.from_json:
+        print("エラー: 取得元を指定してください。--from-json FILE（ネットワークへ接続しない）、"
+              "または --live（公開 REST API へ接続。対話モードでユーザーが更新を依頼したときだけ）", file=sys.stderr)
+        return 2
     try:
         return run(args)
     except (ProposeError, OSError) as exc:

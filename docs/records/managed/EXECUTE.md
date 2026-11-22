@@ -5,6 +5,50 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 20:00
+  summary: レビュー指摘の修正（SVG 検査の XML 解析化・版の + 許可・名前重複と URL 検査・CSP 強化・--live の明示化・SVG の整理）
+  details:
+    変更内容: >-
+      build-pages.py の SVG 検査を部分一致の正規表現から xml.etree.ElementTree による解析へ置き換えた（DOCTYPE・ENTITY・
+      処理命令・CDATA の禁止、要素と属性の許可リスト、on* と href 系と名前空間付き属性の禁止、xmlns は SVG の名前空間のみ、
+      style 要素と属性値の url(・@import 以外の at 規則・バックスラッシュ・expression・コメントの禁止。解析後の値を検査するため
+      文字参照や svg/onload の変形も弾き、description 等の本文は誤検出しない）。版の文字種へ + を許可（build-pages.py と
+      propose-releases.py で同じ規則。リンクは quote で %2B）。掲載表の名前重複と、repo・Pages の URL に ?・#・空白・制御文字を
+      含むものを終了コード2にした。CSP へ base-uri 'none'; form-action 'none' を追加。propose-releases.py は --live を明示した
+      ときだけ接続し、--live も --from-json も無ければ案内を出して終了コード2（同時指定は不可）にした。
+      windows-devenv-setup.svg の説明に無い具体名を汎用の実行行へ変え、全 SVG の薄い文字色（--mu のライト）を #57606a へ
+      変更し、未使用の CSS を削除した。README・DESIGN・Skill・BACKLOG（BL-011）の記述を実装に合わせた。
+      Skill の scan-secrets の使い方を CLAUDE.md の品質ゲート定義に合わせた。
+      コントラスト（相対輝度から計算。48個の text を対象に、背景は直下の矩形・円と不透明度から算出）: ライトの最小 4.87、
+      ダークの最小 6.64（すべて 4.5 以上）。例: ライトの --mu #57606a は背景 #eaeef2 で 5.48・パネル #f0f3f6 で 5.74、
+      ダークの --mu #9da7b3 は #0d1117 で 7.76、完了表示の文字（#1f2328）は薄緑の背景で 11.96。修正前はライトの --mu が
+      3.90 と 4.08 で基準未満だった
+    変更ファイル:
+      - scripts/build-pages.py
+      - scripts/propose-releases.py
+      - site/illustrations/ikumemo.svg
+      - site/illustrations/romcha.svg
+      - site/illustrations/sesami-wear.svg
+      - site/illustrations/windows-devenv-setup.svg
+      - site/index.html
+      - README.md
+      - .claude/skills/portfolio-update/SKILL.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      build-pages.py の2回実行と --check、SVG 検査の異常系17件（svg/onload、文字参照 scr&#105;pt、CDATA、style 内の url(・@import・
+      バックスラッシュ・expression、href と xlink、大文字の ONCLICK、DOCTYPE・ENTITY、処理命令、不正な xmlns、script・foreignObject、
+      style 属性の url(）と desc に description を含む正常系、版に + を含む表示と pick_release、掲載表の名前重複・URL の ?・#・空白、
+      propose-releases.py の引数なしと --live/--from-json 同時指定（接続せず終了コード2）、markdownlint-cli2、validate-records.py、
+      scan-secrets.py。異常系の確認は一時的な文字列・メモリ上の README で行い、リポジトリのファイルは変えていない
+    検証結果: >-
+      成功 - 異常系はすべて拒否（終了コード2またはエラー）、正常系は通り、再生成は冪等で --check 一致、各ゲート合格。
+      実 API には接続していない
+    関連ID:
+      - BL-010
+      - BL-012
 - date: 2026-11-22 19:00
   summary: ポートフォリオ更新の手順を固定するプロジェクト用 Skill portfolio-update を追加
   details:

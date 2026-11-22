@@ -12,6 +12,7 @@ import datetime
 import html
 import re
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import quote, urlsplit
 
@@ -25,18 +26,25 @@ REL_BEGIN = "<!-- RELEASES:BEGIN -->"
 REL_END = "<!-- RELEASES:END -->"
 REL_COLUMNS = ["名前", "最新リリース", "公開日", "種類"]
 REL_KINDS = ("正式", "プレリリース")
-VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages", "イラスト"]
 KINDS = ("アプリ", "ツール")
 ILLUSTRATION_ID = re.compile(r"^[A-Za-z0-9-]+$")
-# SVG を単体で表示するのに必須の名前空間宣言。これだけは禁止語 http の検査前に取り除く
-SVG_NAMESPACE = 'xmlns="http://www.w3.org/2000/svg"'
-# 固定資産の SVG に混入させない要素・属性・参照（img として読まれるため実行はされないが、混入自体を止める）
-FORBIDDEN_SVG = re.compile(r"script|foreignobject|href|url\(|@import|http|[\s\"']on[a-z]+\s*=", re.IGNORECASE)
+SVG_NS = "http://www.w3.org/2000/svg"
+# SVG は XML として解析して検査する。要素・属性は許可リスト方式（現行の固定資産に必要な最小限）
+SVG_ELEMENTS = {"svg", "title", "desc", "defs", "style", "g", "rect", "circle", "ellipse", "line", "path",
+                "polygon", "polyline", "text", "tspan"}
+SVG_ATTRIBUTES = {"class", "id", "style", "viewBox", "role", "aria-labelledby", "transform", "text-anchor",
+                  "x", "y", "width", "height", "rx", "ry", "cx", "cy", "r", "x1", "y1", "x2", "y2", "d", "points"}
+# 解析前の生の文字列で禁止するもの: DOCTYPE・ENTITY・処理命令（XML 宣言を含む）・CDATA、xmlns の宣言（検査は別）
+SVG_RAW_FORBIDDEN = re.compile(r"<!\s*(?:doctype|entity)|<\?|<!\[cdata\[", re.IGNORECASE)
+SVG_XMLNS = re.compile(r"xmlns(?::[\w.-]+)?\s*=\s*([\"'])(.*?)\1", re.IGNORECASE | re.DOTALL)
+# 解析後の属性値・style 要素の中身に禁止するもの（実体参照・文字参照は解析で解決済みの値を検査する）
+SVG_VALUE_FORBIDDEN = re.compile(r"url\s*\(|@(?!media\b)|[\\]|expression|javascript:|/\*", re.IGNORECASE)
 ILLUSTRATION_SIZE = (400, 300)
 # 外部資源を読まない方針の機械的な担保。style はインライン埋め込みのため unsafe-inline のみ許可する
-CSP = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'"
+CSP = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"
 
 CSS = """
 :root{color-scheme:light dark;--bg:#f6f8fa;--card:#fff;--text:#1f2328;--muted:#57606a;--border:#d0d7de;
@@ -87,7 +95,44 @@ def parse_url(value, label):
     parts = urlsplit(url)
     if parts.scheme != "https" or not parts.netloc:
         raise BuildError(f"{label} は https の URL だけを指定できます: {value!r}")
+    if parts.query or parts.fragment or "?" in url or "#" in url or re.search(r"[\s\x00-\x1f\x7f]", url):
+        raise BuildError(f"{label} に ?・#・空白・制御文字を含められません: {value!r}")
     return url
+
+
+def svg_problem(text):
+    """SVG を XML として解析して検査し、問題の説明（無ければ None）を返す。"""
+    found = SVG_RAW_FORBIDDEN.search(text)
+    if found:
+        return f"禁止された記述 {found.group()!r}（DOCTYPE・ENTITY・処理命令・CDATA）があります"
+    for m in SVG_XMLNS.finditer(text):
+        if m.group(1) + m.group(2) + m.group(1) not in (f'"{SVG_NS}"', f"'{SVG_NS}'"):
+            return "xmlns は SVG の名前空間以外を宣言できません"
+    try:
+        root = ET.fromstring(text.encode("utf-8"))
+    except ET.ParseError as exc:
+        return f"XML として解析できません: {exc}"
+    if root.tag != f"{{{SVG_NS}}}svg":
+        return "ルート要素が SVG の svg ではありません"
+    for el in root.iter():
+        if not isinstance(el.tag, str):
+            return "コメント・処理命令の要素があります"
+        ns, _, local = el.tag.partition("}")
+        if ns != "{" + SVG_NS or local not in SVG_ELEMENTS:
+            return f"許可されていない要素 {el.tag!r} があります"
+        for key, val in el.attrib.items():
+            low = key.lower()
+            if "}" in key or low.startswith("on") or "href" in low:
+                return f"禁止された属性 {key!r} があります"
+            if key not in SVG_ATTRIBUTES:
+                return f"許可されていない属性 {key!r} があります"
+            if SVG_VALUE_FORBIDDEN.search(val):
+                return f"属性 {key!r} の値に禁止された記述があります"
+        if local == "style":
+            body = "".join(el.itertext())
+            if SVG_VALUE_FORBIDDEN.search(body):
+                return "style 要素に禁止された記述（url(・@import・エスケープ・expression 等）があります"
+    return None
 
 
 def check_illustration(value, name):
@@ -101,9 +146,9 @@ def check_illustration(value, name):
         text = path.read_text(encoding="utf-8")
     except (OSError, ValueError) as exc:
         raise BuildError(f"{name} のイラストを読めません: {exc}")
-    found = FORBIDDEN_SVG.search(text.replace(SVG_NAMESPACE, ""))
-    if found:
-        raise BuildError(f"{name} のイラスト {value}.svg に禁止された記述 {found.group().strip()!r} があります")
+    problem = svg_problem(text)
+    if problem:
+        raise BuildError(f"{name} のイラスト {value}.svg が不正です: {problem}")
     return value
 
 
@@ -188,6 +233,8 @@ def parse_readme(text):
             "illust": None if illust == "-" else check_illustration(illust, name),
         })
     names = [it["name"] for it in items]
+    if len(set(names)) != len(names):
+        raise BuildError("掲載表で名前が重複しています")
     releases = parse_releases(text, names)
     for it in items:
         it["release"] = releases[it["name"]]
