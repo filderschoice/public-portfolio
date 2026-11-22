@@ -4,6 +4,8 @@
 
 ## 2026-11-22
 
+- 最新リリース表の更新補助スクリプト scripts/propose-releases.py を追加（BL-010）。公開 REST API（認証なし）または
+  --from-json の保存ファイルから差分案を出し、--apply で RELEASES 表だけを書き換える。README・DESIGN の更新手順を反映
 - README へ最新リリース表を追加し、公開ページのカードへ最新リリース（版・日付・種類、リンク付き）を表示。
   build-pages.py へ表の検証を追加（BL-009）
 - ユーザーの決定を反映: 最新リリースの取得は gh ではなく公開 REST API（認証なし）を urllib で GET する補助スクリプト

@@ -5,6 +5,34 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 18:00
+  summary: 最新リリース表の更新補助スクリプト propose-releases.py を追加
+  details:
+    変更内容: >-
+      scripts/propose-releases.py を新規追加した（標準ライブラリのみ）。掲載表の repo 列
+      （https://github.com/filderschoice/<repo> の形のみ許可）から公開 REST API（認証なし、api.github.com 固定、
+      リダイレクト先も検証、タイムアウト10秒、応答上限1MiB、汎用の User-Agent）で各 repo の最新リリース
+      （draft を除く先頭1件）を取得し、RELEASES 表の差分案を出力する。--apply のときだけ RELEASES マーカー間を
+      一時ファイル経由のアトミック置換で書き換え（改行保持・冪等）、--from-json でネットワーク無しの同じ処理ができる。
+      不正な入力は終了コード2。README の運用方針と DESIGN（FR-007・実装指示）を実際の手順へ更新した。
+      ループ内では実 API を呼ばず、検証は --from-json の一時ファイルだけで行った
+    変更ファイル:
+      - scripts/propose-releases.py
+      - README.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      --from-json の保存ファイル（一時ファイル）での差分案の出力・--apply・2回目の --apply、draft の除外、
+      プレリリース判定、リリース無し、CRLF の README、不正入力10種と repo 列が対象外の URL、リダイレクト検証、
+      build-pages.py の生成と --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 差分案どおりに RELEASES 表だけが変わり、2回目は差分なし、CRLF も保持、不正入力はすべて終了コード2、
+      http 以外・api.github.com 以外へのリダイレクトは拒否、--apply した README で build-pages.py の生成と --check が通った。
+      実 API は呼んでいない（BL-011 の人手検証で確認する）
+    関連ID:
+      - BL-010
 - date: 2026-11-22 17:00
   summary: 最新リリース表を追加し build-pages.py でカードへ表示・検証
   details:

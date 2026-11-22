@@ -35,8 +35,13 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 - 公開ページ（`site/index.html`）は、この表から `python scripts/build-pages.py` で生成します。
   整合の確認は `python scripts/build-pages.py --check` です。
 - Pages が無い項目は、Pages 列を「-」にします。
-- 最新リリース表は、リリースのたびに該当行を手で直します（現時点で更新を補助するスクリプトはありません）。
-  直したら `python scripts/build-pages.py` で再生成し、`--check` で一致を確認します。
+- 最新リリース表は、`python scripts/propose-releases.py` で更新します。公開 REST API（認証なし・接続先は
+  api.github.com 固定）から各 repo の最新リリース（draft を除く先頭1件）を取得し、RELEASES 表の差分案を表示します。
+  差分案を確認し、問題なければ `--apply` を付けて再実行すると RELEASES 表だけが書き換わります。
+  その後 `python scripts/build-pages.py` で再生成し、`--check` で一致を確認します。
+  `--from-json <ファイル>` で API 応答の保存ファイルを読めば、ネットワークへ接続せずに同じ処理を行えます
+  （形式は `{"<repo 名>": <releases API の応答の配列>}`）。リリースが無い repo は空配列で `-` になり、
+  応答が不正なとき・掲載表の repo が `https://github.com/filderschoice/<repo>` の形でないときはエラー終了します。
 - イラスト列は、各アプリの内容をイメージしやすくする簡易イラストの ID です。実画面ではなく README の説明に基づく
   模式図で、固定の SVG を `site/illustrations/<ID>.svg` に置きます。イラストが無い項目は「-」にします。
 

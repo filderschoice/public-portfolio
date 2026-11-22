@@ -33,6 +33,17 @@
 - FR-006: 最新リリースのリンク先は repo 列の URL に `/releases/tag/<版>`（版は `urllib.parse.quote`）を付けて導出し、
   README に URL を持たない。カードには「最新リリース v0.17.0（2026-11-21・プレリリース）」の形で版をリンクにして出し、
   無ければ「最新リリース -」とする。値は `html.escape` で出力する
+- FR-007: `python scripts/propose-releases.py`（標準ライブラリのみ。subprocess・gh・資格情報は使わない）が、掲載表の各 repo
+  （`https://github.com/filderschoice/<repo>` の形のみ許可）について公開 REST API
+  `https://api.github.com/repos/filderschoice/<repo>/releases?per_page=5` を GET し、draft を除く先頭1件（プレリリースを含む）を
+  RELEASES 表の行（版・公開日 YYYY-MM-DD・正式/プレリリース）にした置き換え案を diff で標準出力へ出す。
+  空配列は「-」の3列。`--apply` のときだけ RELEASES マーカー間を、同ディレクトリの一時ファイルへ書いてから `os.replace` で
+  置換する（改行は元のファイルに合わせ、他の箇所は変えない。同じ内容なら「差分なし」で書き込まない＝冪等）。
+  `--from-json FILE`（`{repo 名: 応答の配列}`、全 repo のキーが必要）で保存ファイルを読み、ネットワークへ接続しない。
+  接続先は api.github.com（https）固定で、リダイレクト先も同ホスト以外は追従しない。タイムアウト10秒・応答上限1MiB・
+  User-Agent は汎用名で、ヘッダーに資格情報・個人情報を含めない。JSON 不正・応答が配列でない・版/日付/prerelease の不正・
+  draft のみ・未知の repo・repo 欠落・repo 列が対象外の URL・取得失敗はエラー終了（終了コード2）。build-pages.py とは分離し、
+  ネットワークが無くても build-pages.py の生成と `--check` は変わらない
 - FR-005: 次の場合はエラー終了（終了コード2）する。マーカーが1組でない、見出しが FR-002 の列と一致しない、データ行が無い、
   行が `|` で始まり終わらない、列数が7でない、名前・説明・プラットフォームが空、種別が アプリ/ツール 以外、
   repo・Pages（`-` を除く）が https の URL でない、イラストの ID が正規表現に合わない・SVG が実在しない・
@@ -74,6 +85,7 @@
 ## エージェント実装指示
 
 - 掲載項目を増やすときは README の掲載表と最新リリース表へ1行ずつ追加し（イラストを付けるなら SVG も `site/illustrations/` へ置く）、品質ゲートを通す
-- リリースのたびに最新リリース表の該当行を直し、生成と `--check` を実行する（更新を補助するスクリプトは現時点でない）
+- リリースのたびに `python scripts/propose-releases.py` で差分案を出して確認し、`--apply` で最新リリース表を更新して、
+  生成と `--check` を実行する（FR-007）。ループ内では実 API を呼ばず `--from-json` だけを使う
 - 要件 FR-001・FR-002 を変更する場合は本書を更新する
 <!-- COPILOT_RECORDS:END -->
