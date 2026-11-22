@@ -5,6 +5,27 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 23:30
+  summary: 最新リリース取得の実 API 利用を、ガードレール 9 章の期限付き例外 EX-001 として記録し、関連する記述を合わせた
+  details:
+    変更内容: >-
+      ユーザーの決定（実 API を自律ループでも使えるようにする）に基づき、CONTRIBUTING.local.md を新規作成して例外 EX-001 を記録した
+      （最新リリースの取得に限り --live を許可。条件は、その回のループで反映を指示済み・認証なしで資格情報を使わない・GET のみで接続先固定・
+      実行はオーケストレータ本人でサブエージェントへ委任しない・失敗時は再試行せず要確認で記録。期限 2027-11-22、責任者 @filderschoice）。
+      rules/ の本文は変更していない。Skill portfolio-update の手順3、README の運用方針、DESIGN、propose-releases.py の説明文
+      （docstring とエラーメッセージの文言のみ。挙動は不変）を例外に合わせた
+    変更ファイル:
+      - CONTRIBUTING.local.md
+      - .claude/skills/portfolio-update/SKILL.md
+      - README.md
+      - scripts/propose-releases.py
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python -m unittest discover -s tests、build-pages.py --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 36件すべて成功、各ゲート合格。例外を使った --live の実行自体は未実施
 - date: 2026-11-22 22:30
   summary: SVG の生文字列拒否のテストが別分岐で通る偽陽性を修正
   details:

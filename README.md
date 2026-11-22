@@ -24,7 +24,7 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 | 名前 | 最新リリース | 公開日 | 種類 |
 | --- | --- | --- | --- |
 | sesami-wear | v0.17.0 | 2026-11-21 | プレリリース |
-| ikumemo | - | - | - |
+| ikumemo | v0.1.0 | 2026-11-22 | プレリリース |
 | romcha | v1.2.0 | 2026-10-15 | 正式 |
 | windows-devenv-setup | - | - | - |
 <!-- RELEASES:END -->
@@ -38,7 +38,7 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
   一時ディレクトリだけに書き込みます）。
 - Pages が無い項目は、Pages 列を「-」にします。
 - 最新リリース表は、`python scripts/propose-releases.py --live` で更新します（`--live` を明示したときだけ接続し、
-  対話でユーザーが更新を依頼したときに限ります）。公開 REST API（認証なし・接続先は
+  対話でユーザーが更新を依頼したとき、または自律ループ内では `CONTRIBUTING.local.md` の例外 EX-001 の期限内・条件内に限ります）。公開 REST API（認証なし・接続先は
   api.github.com 固定）から各 repo の最新リリース（draft を除く先頭1件）を取得し、RELEASES 表の差分案を表示します。
   差分案を確認し、問題なければ `--live --apply` で再実行すると RELEASES 表だけが書き換わります。
   その後 `python scripts/build-pages.py` で再生成し、`--check` で一致を確認します。
