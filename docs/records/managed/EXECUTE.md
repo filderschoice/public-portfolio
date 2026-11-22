@@ -5,6 +5,33 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 17:00
+  summary: 最新リリース表を追加し build-pages.py でカードへ表示・検証
+  details:
+    変更内容: >-
+      README に「最新リリース」表（RELEASES:BEGIN/END。名前・最新リリース・公開日・種類）を追加し、値は確認済みの事実を
+      手で書いた（sesami-wear は v0.17.0・2026-11-21・プレリリース、romcha は v1.2.0・2026-10-15・正式、
+      ikumemo と windows-devenv-setup は -）。build-pages.py が表を検証し（名前の過不足・重複・未知、版・公開日・種類の
+      形式、版が - のとき他列も -。不正は終了コード2）、カードへ「最新リリース 版（日付・種類）」を repo 列の URL と
+      /releases/tag/版（quote）から導出したリンクで表示する。無ければ「最新リリース -」。値は html.escape。
+      README の運用方針・追加手順と DESIGN（FR-005・FR-006・非機能要件・実装指示）を更新し、site/index.html を再生成した。
+      更新補助スクリプトは未作成のため、README・DESIGN には手で直す旨だけを書いた（BL-010 完了後に追記する）
+    変更ファイル:
+      - scripts/build-pages.py
+      - README.md
+      - site/index.html
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python scripts/build-pages.py の2回実行と cmp、--check、README を一時的に書き換えた異常系（名前不足・重複・未知の名前、
+      不正な版・先頭が記号の版・実在しない日付・日付形式・不正な種類・版が - で他列あり・版があり他列が -・マーカー欠落）の
+      終了コード確認（確認後に復元）、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 生成は冪等で --check 一致、異常系11件はすべて終了コード2、4件のカードにリリース表示が出て、各ゲート合格
+    関連ID:
+      - BL-009
 - date: 2026-11-22 16:00
   summary: README にイラスト列を追加し build-pages.py でカードへ表示・検証
   details:

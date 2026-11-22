@@ -8,11 +8,12 @@
 不正な入力（マーカー欠落・必須列の欠落・https 以外のリンク等）は終了コード2で停止する。
 """
 import argparse
+import datetime
 import html
 import re
 import sys
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 README = ROOT / "README.md"
@@ -20,6 +21,12 @@ OUTPUT = ROOT / "site" / "index.html"
 ILLUSTRATIONS = ROOT / "site" / "illustrations"
 BEGIN = "<!-- PORTFOLIO:BEGIN -->"
 END = "<!-- PORTFOLIO:END -->"
+REL_BEGIN = "<!-- RELEASES:BEGIN -->"
+REL_END = "<!-- RELEASES:END -->"
+REL_COLUMNS = ["名前", "最新リリース", "公開日", "種類"]
+REL_KINDS = ("正式", "プレリリース")
+VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages", "イラスト"]
 KINDS = ("アプリ", "ツール")
 ILLUSTRATION_ID = re.compile(r"^[A-Za-z0-9-]+$")
@@ -48,6 +55,7 @@ display:flex;flex-direction:column;gap:.5rem;overflow-wrap:anywhere}
 .illust{margin:0;border:1px solid var(--border);border-radius:.5rem;background:var(--ill-bg);overflow:hidden}
 .illust img{display:block;width:100%;height:auto}
 .note{color:var(--muted);font-size:.8rem}
+.release{color:var(--muted);font-size:.9rem}
 .card h2{font-size:1.2rem;margin:0}
 .card p{margin:0}
 .meta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;color:var(--muted);font-size:.9rem}
@@ -99,6 +107,55 @@ def check_illustration(value, name):
     return value
 
 
+def table_lines(text, begin, end):
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise BuildError(f"{begin} と {end} が1組ありません")
+    start = text.index(begin) + len(begin)
+    stop = text.index(end)
+    if stop < start:
+        raise BuildError(f"{begin} のマーカーの順序が不正です")
+    return [ln for ln in text[start:stop].splitlines() if ln.strip()]
+
+
+def parse_releases(text, names):
+    """最新リリース表を検証し、{名前: (版, 公開日, 種類) または None} を返す。"""
+    lines = table_lines(text, REL_BEGIN, REL_END)
+    if len(lines) < 3:
+        raise BuildError("最新リリース表に見出し・区切り・データ行がありません")
+    if split_row(lines[0]) != REL_COLUMNS:
+        raise BuildError(f"最新リリース表の見出しが {' | '.join(REL_COLUMNS)} と一致しません")
+    result = {}
+    for line in lines[2:]:
+        cells = split_row(line)
+        if len(cells) != len(REL_COLUMNS):
+            raise BuildError(f"最新リリース表の列数が {len(REL_COLUMNS)} ではありません: {line[:40]}")
+        name, ver, day, kind = cells
+        if name not in names:
+            raise BuildError(f"最新リリース表に掲載表にない名前があります: {name!r}")
+        if name in result:
+            raise BuildError(f"最新リリース表で名前が重複しています: {name}")
+        if ver == "-":
+            if day != "-" or kind != "-":
+                raise BuildError(f"{name} は版が - のとき公開日・種類も - にしてください")
+            result[name] = None
+            continue
+        if not VERSION.fullmatch(ver):
+            raise BuildError(f"{name} の版が不正です（英数と . _ - のみ、先頭は英数）: {ver!r}")
+        if not DATE.fullmatch(day):
+            raise BuildError(f"{name} の公開日は YYYY-MM-DD で指定してください: {day!r}")
+        try:
+            datetime.date.fromisoformat(day)
+        except ValueError:
+            raise BuildError(f"{name} の公開日が実在しません: {day!r}")
+        if kind not in REL_KINDS:
+            raise BuildError(f"{name} の種類は {' / '.join(REL_KINDS)} のいずれかです: {kind!r}")
+        result[name] = (ver, day, kind)
+    missing = [n for n in names if n not in result]
+    if missing:
+        raise BuildError(f"最新リリース表に行がない名前があります: {', '.join(missing)}")
+    return result
+
+
 def parse_readme(text):
     if text.count(BEGIN) != 1 or text.count(END) != 1:
         raise BuildError(f"{BEGIN} と {END} が1組ありません")
@@ -130,7 +187,21 @@ def parse_readme(text):
             "pages": None if pages == "-" else parse_url(pages, f"{name} の Pages"),
             "illust": None if illust == "-" else check_illustration(illust, name),
         })
+    names = [it["name"] for it in items]
+    releases = parse_releases(text, names)
+    for it in items:
+        it["release"] = releases[it["name"]]
     return items
+
+
+def release_html(it):
+    e = html.escape
+    if not it["release"]:
+        return '<p class="release">最新リリース -</p>'
+    ver, day, kind = it["release"]
+    url = f"{it['repo'].rstrip('/')}/releases/tag/{quote(ver, safe='')}"
+    return (f'<p class="release">最新リリース <a href="{e(url)}">{e(ver)}</a>'
+            f"（{e(day)}・{e(kind)}）</p>")
 
 
 def render(items):
@@ -171,6 +242,7 @@ def render(items):
             f'<div class="meta"><span class="badge {KIND_CLASS[it["kind"]]}">{e(it["kind"])}</span>'
             f"<span>{e(it['platform'])}</span></div>",
             f"<p>{e(it['desc'])}</p>",
+            release_html(it),
             f'<div class="links">{links}</div>',
             "</li>",
         ]
