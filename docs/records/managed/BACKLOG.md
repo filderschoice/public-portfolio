@@ -80,30 +80,10 @@
     生成が冪等（2回実行して差分なし）で、--check は一致時に終了コード0・不一致時に1を返す。表の値は HTML
     エスケープし、リンクは https の URL だけを許可する（それ以外はエラーで停止）。掲載表のマーカーや必須列が
     欠けていればエラーで停止する。DESIGN.md に生成方式と出力先を反映し、validate-records・scan-secrets が合格する
-  依存:
-    - BL-001
+  依存: []
   根拠: >-
     出力先は既定値として site/ を選んだ。docs/ は既存のガードレール文書の置き場で、Pages の公開元にすると
     それらまで公開されるため避ける。生成物をコミットするのは、CI を使えないループ内で --check による整合確認を
     可能にするためで、ワークフロー導入後もそのまま公開元に使える
-- id: BL-001
-  区分: 機能追加
-  タスク内容: >-
-    ポートフォリオの正本となる README.md を作成する。冒頭に概要（filderschoice が公開しているアプリ・ツールの一覧で、
-    詳細は各 repo を参照）を置き、マーカーコメントで囲んだ Markdown 表に4件（sesami-wear・ikumemo・romcha・
-    windows-devenv-setup）を掲載する。列は名前・説明・種別（アプリ/ツール）・プラットフォーム/言語・repo リンク・
-    Pages リンク（無ければ「-」）とする
-  優先度: P1
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    README.md に4件の行があり、repo リンクが https://github.com/filderschoice/ 配下の実 repo 名を指す。
-    DESIGN.md へ目的・掲載項目・単一正本の方針を記載し、markdownlint（対象件数の一致を含む）・
-    validate-records・scan-secrets が合格する
-  依存: []
-  根拠: >-
-    正本は既定値として README.md 内の表を選んだ（別データファイルを増やすより正本が1か所で明確なため）。
-    説明文は gh repo list の description を使い、オーケストレータが委任文で渡す（実装担当は外部 API を呼ばない）。
-    windows-devenv-setup は実 repo 名で掲載し種別はツール、他3件はアプリとする
 ```
 <!-- COPILOT_RECORDS:END -->
