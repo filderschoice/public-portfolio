@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Edit(docs/records/managed/BACKLOG.md)",
+      "Edit(docs/records/managed/DESIGN.md)",
+      "Edit(docs/records/managed/EXECUTE.md)",
+      "Read(docs/records/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/validate-records-after-edit.py\"; if [ ! -f \"$f\" ]; then echo \"[validate-records-after-edit] hook script not found: $f\" >&2; exit 1; fi; if command -v python >/dev/null 2>&1; then exec python \"$f\"; else exec python3 \"$f\"; fi",
+            "timeout": 90
+          }
+        ]
+      }
+    ]
+  }
+}

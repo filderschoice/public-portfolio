@@ -1,0 +1,12 @@
+config:
+  MD013:
+    line_length: 120
+    code_blocks: false
+    tables: false
+  MD060: false
+# .gitignore で除外したファイル（展開した配布バンドル等）とビルド生成物は対象外。
+# git 管理対象の *.md 件数（品質ゲートの合否基準）と一致させるため
+gitignore: true
+ignores:
+  - "**/build/**"
+  - "**/node_modules/**"
