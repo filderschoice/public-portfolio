@@ -17,5 +17,6 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 ## 運用方針
 
 - 掲載内容の正本はこの README の表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）です。
-- 公開ページは、この表から生成します。
+- 公開ページ（`site/index.html`）は、この表から `python scripts/build-pages.py` で生成します。
+  整合の確認は `python scripts/build-pages.py --check` です。
 - Pages が無い項目は、Pages 列を「-」にします。
