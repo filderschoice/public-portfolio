@@ -69,4 +69,4 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
    （失敗したら `python scripts/build-pages.py` で再生成し、コミットしてからやり直す）
 2. `git subtree push --prefix site origin gh-pages` で、`site/` の内容だけを `gh-pages` ブランチの直下へ反映する
    （`site/` に変更が無ければ新しいコミットは作られない）
-4. 初回のみ、GitHub の Settings → Pages で公開元を「`gh-pages` ブランチの `/ (root)`」に設定する
+3. 初回のみ、GitHub の Settings → Pages で公開元を「`gh-pages` ブランチの `/ (root)`」に設定する
