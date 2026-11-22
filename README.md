@@ -31,4 +31,5 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 4. repo と Pages の URL は `<https://...>` の形式で書く。https 以外はエラーになる
 5. Pages が無い場合は、Pages 列を `-` にする（公開ページにも Pages リンクを出さない）
 6. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
-7. `README.md` と `site/index.html` を、あわせてコミットする
+7. 説明など、セルの中に `|` は書けない（列数不正としてエラー終了する）
+8. `README.md` と `site/index.html` を、あわせてコミットする

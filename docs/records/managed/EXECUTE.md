@@ -5,6 +5,28 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 14:00
+  summary: レビュー指摘の修正（site/index.html の改行固定と README・DESIGN の記述整理）
+  details:
+    変更内容: >-
+      .gitattributes を新規作成し site/index.html を LF に固定した（core.autocrlf=true の Windows で --check が
+      誤って不一致になるのを防ぐ。スクリプトは変更なし）。README の追加手順へセル内に | を書けない制約を追記し、
+      DESIGN.md の FR を番号順に直して FR-005 の検査範囲と非検査項目を実装どおりに書き、設計方針の文意を整えた
+    変更ファイル:
+      - .gitattributes
+      - README.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      git check-attr、python scripts/build-pages.py の2回実行と --check、markdownlint-cli2、validate-records.py、
+      scan-secrets.py
+    検証結果: >-
+      成功 - 属性が text eol=lf と解決され、生成は冪等で --check 一致、各ゲート合格
+    関連ID:
+      - BL-002
+      - BL-003
+      - BL-004
 - date: 2026-11-22 13:30
   summary: README に掲載リポジトリの追加手順を追記
   details:

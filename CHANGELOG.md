@@ -11,3 +11,4 @@
 - 公開ページ生成スクリプト scripts/build-pages.py と生成物 site/index.html を追加（BL-002）
 - 公開ページをカード表示・レスポンシブ・ダークモードに対応（BL-003）
 - README に掲載リポジトリの追加手順を追記（BL-004）
+- レビュー指摘の修正として .gitattributes で site/index.html を LF に固定し、README・DESIGN の記述を整理
