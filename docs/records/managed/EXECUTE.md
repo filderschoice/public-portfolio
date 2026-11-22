@@ -5,6 +5,32 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 21:00
+  summary: scripts/ 配下の検証コードの単体テスト（unittest）を tests/ へ追加
+  details:
+    変更内容: >-
+      標準ライブラリの unittest だけで、build-pages.py（SVG 検査の許可・拒否24種、掲載表と最新リリース表の検証、
+      生成の冪等と --check、CSP）と propose-releases.py（応答の検証、--from-json、--apply の表だけの更新・冪等・CRLF・
+      置換失敗時に README を壊さないこと、リダイレクト検証、ヘッダーとホストの固定、応答上限、--live なしで接続しないこと）の
+      テスト35件を tests/ へ追加した。ネットワークへは接続せず（接続経路は mock）、書き込みは一時ディレクトリだけで、
+      リポジトリのファイルは変えない。実行方法を README の運用方針と DESIGN へ記載した。CLAUDE.md の品質ゲート表は
+      変更せず、ゲートへ載せるかを BL-013（要確認）として起票した
+    変更ファイル:
+      - tests/helpers.py
+      - tests/test_build_pages.py
+      - tests/test_propose_releases.py
+      - README.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python -m unittest discover -s tests、build-pages.py の --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 35件すべて成功、各ゲート合格。テスト実行後にリポジトリのファイルに変更なし
+    関連ID:
+      - BL-010
+      - BL-013
 - date: 2026-11-22 20:00
   summary: レビュー指摘の修正（SVG 検査の XML 解析化・版の + 許可・名前重複と URL 検査・CSP 強化・--live の明示化・SVG の整理）
   details:

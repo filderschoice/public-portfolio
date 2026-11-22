@@ -34,6 +34,8 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 - 掲載内容の正本はこの README の表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）です。
 - 公開ページ（`site/index.html`）は、この表から `python scripts/build-pages.py` で生成します。
   整合の確認は `python scripts/build-pages.py --check` です。
+- スクリプトの単体テストは `python -m unittest discover -s tests` で実行します（標準ライブラリのみ。ネットワークへ接続せず、
+  一時ディレクトリだけに書き込みます）。
 - Pages が無い項目は、Pages 列を「-」にします。
 - 最新リリース表は、`python scripts/propose-releases.py --live` で更新します（`--live` を明示したときだけ接続し、
   対話でユーザーが更新を依頼したときに限ります）。公開 REST API（認証なし・接続先は

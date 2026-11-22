@@ -82,6 +82,15 @@
   `prefers-color-scheme` でダークに対応する
 - 公開ページは外部 CSS・フォント・JS を読み込まない。出力先は `site/`（`docs/` はガードレール文書の置き場のため公開元にしない）
 
+## テスト
+
+- `tests/` に標準ライブラリの unittest だけで scripts/ 配下の検証コードのテストを置く（実行は `python -m unittest discover -s tests`）。
+  build-pages.py は SVG 検査（許可・拒否の各入力）・掲載表と最新リリース表の検証・生成の冪等と `--check`、
+  propose-releases.py は応答の検証・`--from-json`・`--apply`（表だけの更新・冪等・CRLF・置換失敗時に README を壊さない）・
+  リダイレクト検証・ヘッダーとホストの固定・`--live` なしで接続しないことを検証する。ネットワークへは接続せず
+  （接続する経路は mock）、書き込みは一時ディレクトリだけで、リポジトリのファイルは変えない
+- 品質ゲート表（`CLAUDE.md`）の単体テスト行は `replace-me` のまま。ゲートへ載せるかは BACKLOG の BL-013（要確認）で判断する
+
 ## 実装制約
 
 - 文書は日本語で記述する

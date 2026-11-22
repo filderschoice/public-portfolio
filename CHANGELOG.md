@@ -4,6 +4,8 @@
 
 ## 2026-11-22
 
+- scripts/ 配下の検証コード（build-pages.py・propose-releases.py）の単体テストを tests/ へ追加（unittest、35件）。
+  品質ゲート表へ載せるかの判断を BL-013（要確認）として起票
 - レビュー指摘の修正: SVG 検査を XML 解析による許可リスト方式へ変更、版に + を許可、掲載表の名前重複と repo・Pages URL の ?・# の検査、
   CSP へ base-uri・form-action を追加、propose-releases.py は --live を明示したときだけ接続する仕様へ変更、
   SVG の具体名を汎用化し薄い文字色を AA（4.5:1）以上へ変更、Skill の scan-secrets の使い方を品質ゲート定義に合わせた
