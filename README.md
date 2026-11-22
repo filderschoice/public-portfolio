@@ -24,7 +24,7 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 | 名前 | 最新リリース | 公開日 | 種類 |
 | --- | --- | --- | --- |
 | sesami-wear | v0.17.0 | 2026-11-21 | プレリリース |
-| ikumemo | - | - | - |
+| ikumemo | v0.1.0 | 2026-11-22 | プレリリース |
 | romcha | v1.2.0 | 2026-10-15 | 正式 |
 | windows-devenv-setup | - | - | - |
 <!-- RELEASES:END -->

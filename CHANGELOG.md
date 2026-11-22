@@ -4,6 +4,9 @@
 
 ## 2026-11-22
 
+- 最新リリースの反映手順の確認として、ikumemo の v0.1.0（2026-11-22、プレリリース）を RELEASES 表へ反映し、`site/index.html` を再生成。
+  API 応答は対話側で保存し（認証なし・GET のみ）、ループ内は `propose-releases.py --from-json` と `--apply` のみで実施。
+  gh-pages への反映はユーザーが `git subtree push --prefix site origin gh-pages` で行う
 - SVG の生文字列拒否のテストが別の分岐で通る偽陽性を修正（拒否メッセージの固有化と、分岐間でメッセージが重ならない自己検査の追加）
 - 再点検の指摘の修正: SVG 検査の拒否テストを想定の分岐の理由まで確かめる形へ作り直し、名前空間の検査を iterparse の start-ns へ変更
   （本文中の xmlns の誤検出を解消）、XML コメントを拒否、デッドコードを削除、`.gitignore`（`__pycache__/`・`*.pyc`）を追加
