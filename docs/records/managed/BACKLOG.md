@@ -20,7 +20,6 @@
     ローカルの site/index.html と公開ページの両方で、4件のカードのイラスト・注記・リリース表示が
     ライト/ダーク・狭幅/広幅で判読でき、SVG とリリースリンクが正しく開く
   依存:
-    - BL-008
     - BL-009
   根拠: >-
     見た目の判読性と gh-pages への push は自動検証できず、push はユーザーが実行する決まりのため人手検証とする
@@ -63,40 +62,11 @@
     python scripts/build-pages.py の再実行で差分が出ず（冪等）、--check が終了コード0。
     名前の不足・重複・未知の名前、不正な版・日付・種類を与えると終了コード2になることを一時ファイルで確かめる。
     markdownlint・validate-records・scan-secrets が合格
-  依存:
-    - BL-008
+  依存: []
   根拠: >-
     既定値として、掲載表の列を増やさず別表にした（リリースは頻繁に変わり、行単位の手更新と BL-010 の置き換え案の
     貼り付けがしやすい。掲載表の肥大化も避けられる）。表示するのは種類を問わず最新の1件とし、
     プレリリースは文字で明示する（sesami-wear の最新は v0.17.0 のプレリリースで、隠すと最新の開発状況が伝わらない）。
     URL を README に持たず repo 列から導出するため、新たな外部リンクの入口が増えない
-- id: BL-008
-  区分: 機能追加
-  タスク内容: >-
-    README の掲載表へ「イラスト」列（Pages 列の右。値は SVG の ID か「-」）を追加し、
-    build-pages.py がカードへ img 要素で表示する。ID は正規表現 ^[A-Za-z0-9-]+$ に一致し、
-    site/illustrations/<ID>.svg が実在するものだけを受け付ける（それ以外は終了コード2）。
-    参照する SVG に script・foreignObject・on で始まる属性・href/xlink:href・url(・@import・http が含まれれば
-    終了コード2とする（固定資産の混入対策。ただし SVG を単体で表示するのに必須の名前空間宣言
-    xmlns="http://www.w3.org/2000/svg" だけは、取り除いてから検査する）。img の src は相対パス illustrations/<ID>.svg（Pages は
-    /public-portfolio/ 配下のため絶対パスにしない）、alt は「<名前> の画面イメージ（簡易イラスト。実際の画面ではありません）」を
-    html.escape して出し、width と height を指定する。カードに「イメージ図。実際の画面ではありません」の注記を、
-    ページの lead にも同趣旨の一文を出す。CSS 定数へイラストの枠の配色（ライト/ダーク）を追加する。
-    head に Content-Security-Policy の meta（default-src 'none'、img-src 'self'、style-src 'unsafe-inline'）を加える。
-    README の列説明・追加手順（イラストの ID、SVG の置き場所と禁止要素、無い場合は「-」）と、
-    DESIGN.md の FR-002・FR-005・非機能要件を更新し、site/index.html を再生成する
-  優先度: P1
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    4件のカードにイラストと注記が出る。build-pages.py の再実行で差分が出ず（冪等）、--check が終了コード0。
-    不正な ID・存在しない ID・禁止要素を含む SVG で終了コード2になることを一時ファイルで確かめる
-    （確認後に一時ファイルを残さない）。markdownlint・validate-records・scan-secrets が合格
-  依存: []
-  根拠: >-
-    既定値として、SVG は index.html へ埋め込まず img で読み込む方式にした（img として読まれた SVG ではスクリプトが
-    動かず外部資源も読まれないため安全で、生成スクリプトが SVG の中身を組み立てないので XSS 面が増えない）。
-    イラストの対応付けは名前からの暗黙導出ではなく列で明示し、共有や「-」を書ける形にした。
-    CSP は外部資源を読まない既存方針を機械的に担保するだけで、公開範囲や外部への影響は変わらない
 ```
 <!-- COPILOT_RECORDS:END -->

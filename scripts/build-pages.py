@@ -9,6 +9,7 @@
 """
 import argparse
 import html
+import re
 import sys
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -16,16 +17,25 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parent.parent
 README = ROOT / "README.md"
 OUTPUT = ROOT / "site" / "index.html"
+ILLUSTRATIONS = ROOT / "site" / "illustrations"
 BEGIN = "<!-- PORTFOLIO:BEGIN -->"
 END = "<!-- PORTFOLIO:END -->"
-COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages"]
+COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages", "イラスト"]
 KINDS = ("アプリ", "ツール")
+ILLUSTRATION_ID = re.compile(r"^[A-Za-z0-9-]+$")
+# SVG を単体で表示するのに必須の名前空間宣言。これだけは禁止語 http の検査前に取り除く
+SVG_NAMESPACE = 'xmlns="http://www.w3.org/2000/svg"'
+# 固定資産の SVG に混入させない要素・属性・参照（img として読まれるため実行はされないが、混入自体を止める）
+FORBIDDEN_SVG = re.compile(r"script|foreignobject|href|url\(|@import|http|[\s\"']on[a-z]+\s*=", re.IGNORECASE)
+ILLUSTRATION_SIZE = (400, 300)
+# 外部資源を読まない方針の機械的な担保。style はインライン埋め込みのため unsafe-inline のみ許可する
+CSP = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'"
 
 CSS = """
 :root{color-scheme:light dark;--bg:#f6f8fa;--card:#fff;--text:#1f2328;--muted:#57606a;--border:#d0d7de;
---link:#0550ae;--app-bg:#ddf4ff;--app-fg:#0a3069;--tool-bg:#fff1d6;--tool-fg:#5c3d00}
+--link:#0550ae;--ill-bg:#eaeef2;--app-bg:#ddf4ff;--app-fg:#0a3069;--tool-bg:#fff1d6;--tool-fg:#5c3d00}
 @media (prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#161b22;--text:#e6edf3;--muted:#9da7b3;
---border:#30363d;--link:#79c0ff;--app-bg:#10304f;--app-fg:#cae8ff;--tool-bg:#3a2a07;--tool-fg:#ffe0a3}}
+--border:#30363d;--ill-bg:#0d1117;--link:#79c0ff;--app-bg:#10304f;--app-fg:#cae8ff;--tool-bg:#3a2a07;--tool-fg:#ffe0a3}}
 *{box-sizing:border-box}
 body{margin:0;padding:1.5rem 1rem;background:var(--bg);color:var(--text);
 font-family:system-ui,-apple-system,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;line-height:1.6}
@@ -35,6 +45,9 @@ h1{font-size:1.6rem;margin:0 0 .5rem}
 .cards{list-style:none;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
 .card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem 1.25rem;
 display:flex;flex-direction:column;gap:.5rem;overflow-wrap:anywhere}
+.illust{margin:0;border:1px solid var(--border);border-radius:.5rem;background:var(--ill-bg);overflow:hidden}
+.illust img{display:block;width:100%;height:auto}
+.note{color:var(--muted);font-size:.8rem}
 .card h2{font-size:1.2rem;margin:0}
 .card p{margin:0}
 .meta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;color:var(--muted);font-size:.9rem}
@@ -69,6 +82,23 @@ def parse_url(value, label):
     return url
 
 
+def check_illustration(value, name):
+    """イラスト列の値（SVG の ID）を検証し、固定資産 site/illustrations/<ID>.svg を確認する。"""
+    if not ILLUSTRATION_ID.fullmatch(value):
+        raise BuildError(f"{name} のイラストは英数字とハイフンの ID か - だけを指定できます: {value!r}")
+    path = ILLUSTRATIONS / f"{value}.svg"
+    if not path.is_file():
+        raise BuildError(f"{name} のイラスト site/illustrations/{value}.svg がありません")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, ValueError) as exc:
+        raise BuildError(f"{name} のイラストを読めません: {exc}")
+    found = FORBIDDEN_SVG.search(text.replace(SVG_NAMESPACE, ""))
+    if found:
+        raise BuildError(f"{name} のイラスト {value}.svg に禁止された記述 {found.group().strip()!r} があります")
+    return value
+
+
 def parse_readme(text):
     if text.count(BEGIN) != 1 or text.count(END) != 1:
         raise BuildError(f"{BEGIN} と {END} が1組ありません")
@@ -86,7 +116,7 @@ def parse_readme(text):
         cells = split_row(line)
         if len(cells) != len(COLUMNS):
             raise BuildError(f"列数が {len(COLUMNS)} ではありません: {line[:40]}")
-        name, desc, kind, platform, repo, pages = cells
+        name, desc, kind, platform, repo, pages, illust = cells
         if not name or not desc or not platform:
             raise BuildError(f"空の必須セルがあります: {name or line[:40]}")
         if kind not in KINDS:
@@ -98,6 +128,7 @@ def parse_readme(text):
             "platform": platform,
             "repo": parse_url(repo, f"{name} の repo"),
             "pages": None if pages == "-" else parse_url(pages, f"{name} の Pages"),
+            "illust": None if illust == "-" else check_illustration(illust, name),
         })
     return items
 
@@ -111,21 +142,31 @@ def render(items):
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
         '<meta name="color-scheme" content="light dark">',
+        f'<meta http-equiv="Content-Security-Policy" content="{e(CSP)}">',
         "<title>公開ポートフォリオ</title>",
         "<style>" + CSS + "</style>",
         "</head>",
         "<body>",
         "<main>",
         "<h1>公開ポートフォリオ</h1>",
-        '<p class="lead">filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。</p>',
+        '<p class="lead">filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。'
+        "掲載のイラストは内容をイメージしやすくするための模式図で、実際の画面ではありません。</p>",
         '<ul class="cards">',
     ]
     for it in items:
         links = f'<a href="{e(it["repo"])}">repo</a>'
         if it["pages"]:
             links += f'<a href="{e(it["pages"])}">Pages</a>'
+        out.append('<li class="card">')
+        if it["illust"]:
+            w, h = ILLUSTRATION_SIZE
+            alt = f"{it['name']} の画面イメージ（簡易イラスト。実際の画面ではありません）"
+            out += [
+                f'<div class="illust"><img src="illustrations/{e(it["illust"])}.svg" alt="{e(alt)}" '
+                f'width="{w}" height="{h}"></div>',
+                '<p class="note">イメージ図。実際の画面ではありません</p>',
+            ]
         out += [
-            '<li class="card">',
             f"<h2>{e(it['name'])}</h2>",
             f'<div class="meta"><span class="badge {KIND_CLASS[it["kind"]]}">{e(it["kind"])}</span>'
             f"<span>{e(it['platform'])}</span></div>",

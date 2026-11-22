@@ -4,6 +4,8 @@
 
 ## 2026-11-22
 
+- README の掲載表へイラスト列を追加し、公開ページのカードへ簡易イラストと「実際の画面ではありません」の注記を表示。
+  build-pages.py へイラストの ID・実在・禁止記述の検査と CSP の meta を追加（BL-008）
 - 掲載4件の簡易イラスト（SVG）を `site/illustrations/` へ追加し、`.gitattributes` で LF に固定（BL-007）。
   実際の画面ではない模式図で、ダークモードに対応
 - 公開ページへ簡易イラストと最新リリース情報を加える作業計画を `docs/records/managed/BACKLOG.md` へ起票

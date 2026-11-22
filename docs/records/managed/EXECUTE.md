@@ -5,6 +5,35 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 16:00
+  summary: README にイラスト列を追加し build-pages.py でカードへ表示・検証
+  details:
+    変更内容: >-
+      README の掲載表へ「イラスト」列（Pages 列の右。SVG の ID か「-」）を追加し、build-pages.py がカードへ
+      img 要素（相対パス illustrations/ID.svg、width と height、alt を html.escape）で表示するようにした。
+      ID は ^[A-Za-z0-9-]+$ かつ site/illustrations/ID.svg が実在するものだけを受け付け、SVG に script・foreignObject・
+      on で始まる属性・href・url(・@import・http があれば終了コード2とする。カードとページの lead に
+      「実際の画面ではありません」の注記を出し、CSS へイラスト枠の配色（ライト/ダーク）を追加した。
+      head へ CSP の meta（default-src 'none'; img-src 'self'; style-src 'unsafe-inline'）を加えた。
+      README の列説明・追加手順、DESIGN の FR-002・FR-005・非機能要件を更新し、site/index.html を再生成した。
+      既定値: 名前空間宣言 xmlns="http://www.w3.org/2000/svg" は http の検査前に取り除く。
+      イラストの alt とカードの注記は SVG 内の注記と重複するが、画像が読めない場合の代替のため両方残した
+    変更ファイル:
+      - scripts/build-pages.py
+      - README.md
+      - site/index.html
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python scripts/build-pages.py の2回実行と cmp、--check、不正 ID・存在しない ID・スラッシュ入り ID と
+      禁止要素（script・href・on 属性・foreignObject・url(・@import・http）を一時的に混入させた SVG での終了コード確認
+      （確認後に元へ復元）、ヘッドレス Edge での描画確認、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 生成は冪等で --check 一致、異常系はすべて終了コード2、4件のカードにイラストと注記が表示され、各ゲート合格
+    関連ID:
+      - BL-008
 - date: 2026-11-22 15:00
   summary: 掲載4件の簡易イラスト（SVG）を site/illustrations/ へ追加
   details:
