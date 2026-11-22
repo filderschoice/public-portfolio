@@ -48,11 +48,13 @@
 - FR-005: 次の場合はエラー終了（終了コード2）する。マーカーが1組でない、見出しが FR-002 の列と一致しない、データ行が無い、
   行が `|` で始まり終わらない、列数が7でない、名前・説明・プラットフォームが空、種別が アプリ/ツール 以外、
   repo・Pages（`-` を除く）が https の URL でない、イラストの ID が正規表現に合わない・SVG が実在しない・
-  SVG が検査に通らない（XML として解析し、生の文字列に DOCTYPE・ENTITY・処理命令・CDATA がある、xmlns が SVG の名前空間以外、
+  SVG が検査に通らない（XML として解析できない、生の文字列に DOCTYPE・ENTITY・処理命令・CDATA・XML コメント〔`<!--`。ElementTree が黙って捨てるため生の文字列で拒否〕がある、
+  解析時（`iterparse` の `start-ns`）に取得した名前空間の宣言が、接頭辞なしの SVG の名前空間以外〔xlink を含む〕、ルート要素が SVG の svg でない、
   要素が許可リスト〔svg・title・desc・defs・style・g・rect・circle・ellipse・line・path・polygon・polyline・text・tspan〕外、
-  属性が許可リスト外または `on` で始まる・href を含む・名前空間付き、属性値または style 要素の中身に `url(`・`@import` など
+  属性が許可リスト外または `on` で始まる・href を含む・名前空間付き〔宣言できる名前空間が SVG のみのため、`xlink:href` は名前空間の宣言の段階で拒否され、
+  属性の検査の名前空間付き分岐へ到達するのは暗黙の `xml:` 接頭辞〔`xml:lang` 等〕だけ〕、属性値または style 要素の中身に `url(`・`@import` など
   `@media` 以外の at 規則・バックスラッシュ・expression・javascript:・コメントがある。文字参照・実体参照は解析後の値で検査する。
-  title・desc・text の本文は検査しないため、説明文に description 等が入っても誤検出しない）。repo・Pages の URL に `?`・`#`・空白・制御文字が含まれる。
+  title・desc・text の本文は検査しないため、説明文に description や `xmlns="..."` 等が入っても誤検出しない）。repo・Pages の URL に `?`・`#`・空白・制御文字が含まれる。
   掲載表の名前が重複する。説明などのセルに `|` は使えない（列数不正になる）。
   最新リリース表は、`RELEASES` マーカーが1組でない、見出しが不一致、列数が4でない、名前が掲載表にない・重複・不足、
   版が英数と `.` `_` `+` `-` 以外を含む・先頭が英数でない、公開日が YYYY-MM-DD の実在日でない、種類が 正式/プレリリース 以外、
@@ -85,7 +87,7 @@
 ## テスト
 
 - `tests/` に標準ライブラリの unittest だけで scripts/ 配下の検証コードのテストを置く（実行は `python -m unittest discover -s tests`）。
-  build-pages.py は SVG 検査（許可・拒否の各入力）・掲載表と最新リリース表の検証・生成の冪等と `--check`、
+  build-pages.py は SVG 検査（許可・拒否の各入力。拒否は想定の分岐の理由メッセージまで確かめる）・掲載表と最新リリース表の検証・生成の冪等と `--check`、
   propose-releases.py は応答の検証・`--from-json`・`--apply`（表だけの更新・冪等・CRLF・置換失敗時に README を壊さない）・
   リダイレクト検証・ヘッダーとホストの固定・`--live` なしで接続しないことを検証する。ネットワークへは接続せず
   （接続する経路は mock）、書き込みは一時ディレクトリだけで、リポジトリのファイルは変えない

@@ -27,36 +27,65 @@ class SvgProblemTest(unittest.TestCase):
         svg = f"<svg {NS}><title>t</title><desc>description と onload= と href の説明</desc></svg>"
         self.assertIsNone(bp.svg_problem(svg))
 
+    def test_text_content_with_xmlns_is_not_a_false_positive(self):
+        for body in ('xmlns="http://x"', "xmlns:xlink='http://www.w3.org/1999/xlink'"):
+            with self.subTest(body):
+                self.assertIsNone(bp.svg_problem(f"<svg {NS}><title>t</title><desc>{body}</desc></svg>"))
+
     def test_rejected_inputs(self):
+        """各入力が、想定した検査の分岐（理由メッセージの識別子）で拒否されることまで確かめる。"""
+        raw, nsdecl, parse, root = "禁止された記述", "名前空間以外", "XML として解析", "ルート要素"
+        elem, unknown, nsattr = "許可されていない要素", "許可されていない属性", "名前空間付きの属性"
+        handler, link, value, style = "イベントハンドラ属性", "リンク属性", "の値に禁止", "style 要素に禁止"
         cases = {
-            "svg/onload": f"<svg/onload=alert(1) {NS}></svg>",
-            "character reference in tag": f"<svg {NS}><scr&#105;pt>x</scr&#105;pt></svg>",
-            "script element": f"<svg {NS}><script>1</script></svg>",
-            "foreignObject": f"<svg {NS}><foreignObject/></svg>",
-            "CDATA": f"<svg {NS}><style><![CDATA[.a{{}}]]></style></svg>",
-            "style url": f"<svg {NS}><style>.a{{fill:url(#x)}}</style></svg>",
-            "style url with space": f"<svg {NS}><style>.a{{fill:url (#x)}}</style></svg>",
-            "style import": f'<svg {NS}><style>@import "a.css";</style></svg>',
-            "style other at-rule": f"<svg {NS}><style>@font-face{{}}</style></svg>",
-            "style escape": f"<svg {NS}><style>.a{{fill:u{BS}72l(x)}}</style></svg>",
-            "style expression": f"<svg {NS}><style>.a{{width:expression(1)}}</style></svg>",
-            "style comment": f"<svg {NS}><style>.a{{fill:u/**/rl(x)}}</style></svg>",
-            "style attribute url": f'<svg {NS}><rect style="fill:url(#a)"/></svg>',
-            "href on a": f'<svg {NS}><a Href="x"/></svg>',
-            "href attribute": f'<svg {NS}><rect href="x"/></svg>',
-            "xlink:href": f'<svg {NS} xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="#a"/></svg>',
-            "upper-case on attribute": f'<svg {NS}><rect ONCLICK="x"/></svg>',
-            "unknown attribute": f'<svg {NS}><rect fill="red"/></svg>',
-            "DOCTYPE": f"<!DOCTYPE svg><svg {NS}></svg>",
-            "ENTITY": f'<!DOCTYPE svg [<!ENTITY a "b">]><svg {NS}>&a;</svg>',
-            "processing instruction": f'<?xml version="1.0"?><svg {NS}></svg>',
-            "foreign xmlns": '<svg xmlns="http://evil.example/"></svg>',
-            "not svg root": f"<g {NS}></g>",
-            "malformed": f"<svg {NS}><rect></svg>",
+            "script element": (f"<svg {NS}><script>1</script></svg>", elem),
+            "foreignObject": (f"<svg {NS}><foreignObject/></svg>", elem),
+            "a element": (f'<svg {NS}><a/></svg>', elem),
+            "CDATA": (f"<svg {NS}><style><![CDATA[.a{{}}]]></style></svg>", raw),
+            "DOCTYPE": (f"<!DOCTYPE svg><svg {NS}></svg>", raw),
+            "ENTITY": (f'<!DOCTYPE svg [<!ENTITY a "b">]><svg {NS}>&a;</svg>', raw),
+            "processing instruction": (f'<?xml version="1.0"?><svg {NS}></svg>', raw),
+            "comment": (f"<svg {NS}><!-- c --></svg>", raw),
+            "comment in text": (f"<svg {NS}><desc>a<!-- c -->b</desc></svg>", raw),
+            "foreign default xmlns": ('<svg xmlns="http://evil.example/"></svg>', nsdecl),
+            "xlink xmlns declaration": (
+                f'<svg {NS} xmlns:xlink="http://www.w3.org/1999/xlink"><rect/></svg>', nsdecl),
+            "prefixed svg xmlns": (f'<svg {NS} xmlns:s="{SVG_NS}"></svg>', nsdecl),
+            "xmlns declared on a child": (f'<svg {NS}><g xmlns:x="http://x"/></svg>', nsdecl),
+            "namespaced attribute (xml:lang)": (f'<svg {NS}><rect xml:lang="ja"/></svg>', nsattr),
+            "namespaced href (xml:href)": (f'<svg {NS}><rect xml:href="x"/></svg>', nsattr),
+            "onload on root": (f'<svg {NS} onload="alert(1)"></svg>', handler),
+            "onclick on rect": (f'<svg {NS}><rect onclick="x"/></svg>', handler),
+            "mixed-case OnLoad": (f'<svg {NS}><rect OnLoad="x"/></svg>', handler),
+            "upper-case ONCLICK": (f'<svg {NS}><rect ONCLICK="x"/></svg>', handler),
+            "href attribute": (f'<svg {NS}><rect href="x"/></svg>', link),
+            "mixed-case Href": (f'<svg {NS}><rect Href="x"/></svg>', link),
+            "unknown attribute": (f'<svg {NS}><rect fill="red"/></svg>', unknown),
+            "attribute value with url": (f'<svg {NS}><rect style="fill:url(#a)"/></svg>', value),
+            "attribute value url via character reference": (
+                f'<svg {NS}><rect style="fill:u&#114;l(#a)"/></svg>', value),
+            "attribute value javascript via character reference": (
+                f'<svg {NS}><rect id="java&#115;cript:x"/></svg>', value),
+            "style url": (f"<svg {NS}><style>.a{{fill:url(#x)}}</style></svg>", style),
+            "style url with space": (f"<svg {NS}><style>.a{{fill:url (#x)}}</style></svg>", style),
+            "style import": (f'<svg {NS}><style>@import "a.css";</style></svg>', style),
+            "style other at-rule": (f"<svg {NS}><style>@font-face{{}}</style></svg>", style),
+            "style escape": (f"<svg {NS}><style>.a{{fill:u{BS}72l(x)}}</style></svg>", style),
+            "style expression": (f"<svg {NS}><style>.a{{width:expression(1)}}</style></svg>", style),
+            "style comment": (f"<svg {NS}><style>.a{{fill:u/**/rl(x)}}</style></svg>", style),
+            "not svg root": (f"<g {NS}></g>", root),
+            "no namespace root": ("<svg></svg>", root),
+            # XML として不正な入力は、解析の段階で拒否される（検査の各分岐には到達しない）
+            "malformed (unclosed)": (f"<svg {NS}><rect></svg>", parse),
+            "svg/onload (not well-formed)": (f"<svg/onload=alert(1) {NS}></svg>", parse),
+            "character reference in tag name": (f"<svg {NS}><scr&#105;pt>x</scr&#105;pt></svg>", parse),
+            "undeclared prefix (xlink:href)": (f'<svg {NS}><use xlink:href="#a"/></svg>', parse),
         }
-        for label, svg in cases.items():
+        for label, (svg, expected) in cases.items():
             with self.subTest(label):
-                self.assertTrue(bp.svg_problem(svg), f"{label} が通ってしまった")
+                problem = bp.svg_problem(svg)
+                self.assertTrue(problem, f"{label} が通ってしまった")
+                self.assertIn(expected, problem, f"{label} が想定外の分岐で拒否された: {problem}")
 
 
 class ReadmeParseTest(TempCase):

@@ -4,6 +4,8 @@
 
 ## 2026-11-22
 
+- 再点検の指摘の修正: SVG 検査の拒否テストを想定の分岐の理由まで確かめる形へ作り直し、名前空間の検査を iterparse の start-ns へ変更
+  （本文中の xmlns の誤検出を解消）、XML コメントを拒否、デッドコードを削除、`.gitignore`（`__pycache__/`・`*.pyc`）を追加
 - scripts/ 配下の検証コード（build-pages.py・propose-releases.py）の単体テストを tests/ へ追加（unittest、35件）。
   品質ゲート表へ載せるかの判断を BL-013（要確認）として起票
 - レビュー指摘の修正: SVG 検査を XML 解析による許可リスト方式へ変更、版に + を許可、掲載表の名前重複と repo・Pages URL の ?・# の検査、

@@ -10,6 +10,7 @@
 import argparse
 import datetime
 import html
+import io
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -37,9 +38,9 @@ SVG_ELEMENTS = {"svg", "title", "desc", "defs", "style", "g", "rect", "circle", 
                 "polygon", "polyline", "text", "tspan"}
 SVG_ATTRIBUTES = {"class", "id", "style", "viewBox", "role", "aria-labelledby", "transform", "text-anchor",
                   "x", "y", "width", "height", "rx", "ry", "cx", "cy", "r", "x1", "y1", "x2", "y2", "d", "points"}
-# 解析前の生の文字列で禁止するもの: DOCTYPE・ENTITY・処理命令（XML 宣言を含む）・CDATA、xmlns の宣言（検査は別）
-SVG_RAW_FORBIDDEN = re.compile(r"<!\s*(?:doctype|entity)|<\?|<!\[cdata\[", re.IGNORECASE)
-SVG_XMLNS = re.compile(r"xmlns(?::[\w.-]+)?\s*=\s*([\"'])(.*?)\1", re.IGNORECASE | re.DOTALL)
+# 解析前の生の文字列で禁止するもの: DOCTYPE・ENTITY・処理命令（XML 宣言を含む）・CDATA・XML コメント
+# （コメントは ElementTree が黙って捨てて検査できないため、生の文字列で拒否する）。名前空間の宣言は解析時に検査する
+SVG_RAW_FORBIDDEN = re.compile(r"<!\s*(?:doctype|entity)|<\?|<!\[cdata\[|<!--", re.IGNORECASE)
 # 解析後の属性値・style 要素の中身に禁止するもの（実体参照・文字参照は解析で解決済みの値を検査する）
 SVG_VALUE_FORBIDDEN = re.compile(r"url\s*\(|@(?!media\b)|[\\]|expression|javascript:|/\*", re.IGNORECASE)
 ILLUSTRATION_SIZE = (400, 300)
@@ -104,26 +105,34 @@ def svg_problem(text):
     """SVG を XML として解析して検査し、問題の説明（無ければ None）を返す。"""
     found = SVG_RAW_FORBIDDEN.search(text)
     if found:
-        return f"禁止された記述 {found.group()!r}（DOCTYPE・ENTITY・処理命令・CDATA）があります"
-    for m in SVG_XMLNS.finditer(text):
-        if m.group(1) + m.group(2) + m.group(1) not in (f'"{SVG_NS}"', f"'{SVG_NS}'"):
-            return "xmlns は SVG の名前空間以外を宣言できません"
+        return f"禁止された記述 {found.group()!r}（DOCTYPE・ENTITY・処理命令・CDATA・コメント）があります"
+    root = None
     try:
-        root = ET.fromstring(text.encode("utf-8"))
+        for event, data in ET.iterparse(io.BytesIO(text.encode("utf-8")), events=("start-ns", "start")):
+            if event == "start-ns":
+                prefix, uri = data
+                # 宣言された名前空間は、接頭辞なしの SVG の名前空間だけを許可する（xlink 等は許可しない）
+                if prefix != "" or uri != SVG_NS:
+                    return "SVG の名前空間以外の名前空間（xmlns:接頭辞 を含む）は宣言できません"
+            elif root is None:
+                root = data
     except ET.ParseError as exc:
         return f"XML として解析できません: {exc}"
     if root.tag != f"{{{SVG_NS}}}svg":
         return "ルート要素が SVG の svg ではありません"
     for el in root.iter():
-        if not isinstance(el.tag, str):
-            return "コメント・処理命令の要素があります"
         ns, _, local = el.tag.partition("}")
         if ns != "{" + SVG_NS or local not in SVG_ELEMENTS:
             return f"許可されていない要素 {el.tag!r} があります"
         for key, val in el.attrib.items():
             low = key.lower()
-            if "}" in key or low.startswith("on") or "href" in low:
-                return f"禁止された属性 {key!r} があります"
+            # 名前空間付きの属性は、宣言できる名前空間が SVG のみのため xml:lang など暗黙の xml 接頭辞でだけ到達する
+            if "}" in key:
+                return f"名前空間付きの属性 {key!r} は使えません"
+            if low.startswith("on"):
+                return f"イベントハンドラ属性 {key!r} は使えません"
+            if "href" in low:
+                return f"リンク属性 {key!r} は使えません"
             if key not in SVG_ATTRIBUTES:
                 return f"許可されていない属性 {key!r} があります"
             if SVG_VALUE_FORBIDDEN.search(val):

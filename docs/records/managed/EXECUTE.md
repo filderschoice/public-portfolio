@@ -5,6 +5,30 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 22:00
+  summary: SVG 検査の拒否テストの偽陽性・デッドコード・名前空間検査の誤検出を修正し、.gitignore を追加
+  details:
+    変更内容: >-
+      build-pages.py の SVG 検査を整理した。名前空間の宣言は生文字列の正規表現をやめ、ElementTree.iterparse の start-ns で
+      取得して接頭辞なしの SVG の名前空間以外（xlink を含む）を拒否する（title・desc・text の本文に xmlns="..." と書いても
+      誤検出しない）。XML コメントは ElementTree が黙って捨てるため生の文字列で拒否し、デッドコードの isinstance 判定を削除した。
+      属性の拒否理由を名前空間付き・イベントハンドラ・リンクに分けた。拒否テストは、想定の分岐の理由メッセージまで確かめる
+      形へ作り直し（XML として不正な入力は解析の分岐として分離）、コメント・xmlns の本文・名前空間宣言・xml:lang・on* 大文字混在・
+      文字参照による url( と javascript: のケースを追加した。各分岐を一時的に壊すと対応するテストが落ちることを確認し元へ戻した。
+      xlink:href 属性は名前空間の宣言で先に拒否されるため属性側の分岐には到達せず、その旨を DESIGN へ記した。
+      リポジトリ直下へ .gitignore（__pycache__/ と *.pyc のみ）を追加した。README・DESIGN の記述を実装に合わせた
+    変更ファイル:
+      - scripts/build-pages.py
+      - tests/test_build_pages.py
+      - .gitignore
+      - README.md
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python -m unittest discover -s tests、build-pages.py の再生成と --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 36件すべて成功、各ゲート合格
 - date: 2026-11-22 21:00
   summary: scripts/ 配下の検証コードの単体テスト（unittest）を tests/ へ追加
   details:

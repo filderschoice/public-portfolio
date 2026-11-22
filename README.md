@@ -61,9 +61,9 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 5. repo と Pages の URL は `<https://...>` の形式で書く。https 以外はエラーになる
 6. Pages が無い場合は、Pages 列を `-` にする（公開ページにも Pages リンクを出さない）
 7. イラストを付ける場合は、手書きの SVG を `site/illustrations/<ID>.svg` に置き、イラスト列へ ID（英数字とハイフンのみ）を書く。
-   付けない場合は `-` にする。SVG は XML として解析して検査し、DOCTYPE・ENTITY・処理命令・CDATA、許可リスト外の要素・属性
+   付けない場合は `-` にする。SVG は XML として解析して検査し、DOCTYPE・ENTITY・処理命令・CDATA・XML コメント（`<!--`）、許可リスト外の要素・属性
    （script・foreignObject・`on` で始まる属性・href・xlink など）、style 内の `url(`・`@import`・エスケープ・expression、
-   SVG の名前空間以外の xmlns を書けない。存在しない ID・不正な ID・禁止された記述はエラーになる。
+   SVG の名前空間以外の名前空間宣言（`xmlns:xlink` など）を書けない。存在しない ID・不正な ID・禁止された記述はエラーになる。
    描くのは説明に出てくる要素だけにし（品目などの例示は除く）、
    「実際の画面ではありません」の注記を SVG の title に入れ、ダークモードでも読める配色にする
 8. `python scripts/build-pages.py` で `site/index.html` を再生成し、`python scripts/build-pages.py --check` で一致を確認する
