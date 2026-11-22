@@ -5,6 +5,26 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-22 13:00
+  summary: 公開ページをカード表示・レスポンシブ・ダークモードに対応
+  details:
+    変更内容: >-
+      build-pages.py にインライン CSS を追加し、カード表示、幅 40rem 以下で1列、prefers-color-scheme のダークモード、
+      種別バッジを実装した。Pages が無い項目はリンクを出さない。site/index.html を再生成した
+    変更ファイル:
+      - scripts/build-pages.py
+      - site/index.html
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/BACKLOG.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python scripts/build-pages.py を2回実行して差分なし、--check、生成物の外部参照と prefers-color-scheme の grep、
+      markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 冪等性と --check 一致、外部リソース参照0件、各ゲート合格。ブラウザでの表示は未確認
+    関連ID:
+      - BL-003
 - date: 2026-11-22 12:30
   summary: 公開ページ生成スクリプト scripts/build-pages.py と site/index.html を追加
   details:

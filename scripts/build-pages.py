@@ -21,6 +21,32 @@ END = "<!-- PORTFOLIO:END -->"
 COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages"]
 KINDS = ("アプリ", "ツール")
 
+CSS = """
+:root{color-scheme:light dark;--bg:#f6f8fa;--card:#fff;--text:#1f2328;--muted:#57606a;--border:#d0d7de;
+--link:#0550ae;--app-bg:#ddf4ff;--app-fg:#0a3069;--tool-bg:#fff1d6;--tool-fg:#5c3d00}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#161b22;--text:#e6edf3;--muted:#9da7b3;
+--border:#30363d;--link:#79c0ff;--app-bg:#10304f;--app-fg:#cae8ff;--tool-bg:#3a2a07;--tool-fg:#ffe0a3}}
+*{box-sizing:border-box}
+body{margin:0;padding:1.5rem 1rem;background:var(--bg);color:var(--text);
+font-family:system-ui,-apple-system,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;line-height:1.6}
+main{max-width:64rem;margin:0 auto}
+h1{font-size:1.6rem;margin:0 0 .5rem}
+.lead{color:var(--muted);margin:0 0 1.5rem}
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem 1.25rem;
+display:flex;flex-direction:column;gap:.5rem;overflow-wrap:anywhere}
+.card h2{font-size:1.2rem;margin:0}
+.card p{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;color:var(--muted);font-size:.9rem}
+.badge{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-weight:700;font-size:.85rem}
+.badge-app{background:var(--app-bg);color:var(--app-fg)}
+.badge-tool{background:var(--tool-bg);color:var(--tool-fg)}
+.links{margin-top:auto;display:flex;flex-wrap:wrap;gap:1rem}
+a{color:var(--link)}
+@media (max-width:40rem){.cards{grid-template-columns:minmax(0,1fr)}}
+"""
+KIND_CLASS = {"アプリ": "badge-app", "ツール": "badge-tool"}
+
 
 class BuildError(Exception):
     pass
@@ -84,26 +110,30 @@ def render(items):
         "<head>",
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        '<meta name="color-scheme" content="light dark">',
         "<title>公開ポートフォリオ</title>",
+        "<style>" + CSS + "</style>",
         "</head>",
         "<body>",
+        "<main>",
         "<h1>公開ポートフォリオ</h1>",
-        "<p>filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。</p>",
-        "<ul>",
+        '<p class="lead">filderschoice が公開しているアプリ・ツールの一覧です。詳細は各リポジトリを参照してください。</p>',
+        '<ul class="cards">',
     ]
     for it in items:
         links = f'<a href="{e(it["repo"])}">repo</a>'
         if it["pages"]:
-            links += f' / <a href="{e(it["pages"])}">Pages</a>'
+            links += f'<a href="{e(it["pages"])}">Pages</a>'
         out += [
-            "<li>",
+            '<li class="card">',
             f"<h2>{e(it['name'])}</h2>",
-            f"<p>{e(it['kind'])} / {e(it['platform'])}</p>",
+            f'<div class="meta"><span class="badge {KIND_CLASS[it["kind"]]}">{e(it["kind"])}</span>'
+            f"<span>{e(it['platform'])}</span></div>",
             f"<p>{e(it['desc'])}</p>",
-            f"<p>{links}</p>",
+            f'<div class="links">{links}</div>',
             "</li>",
         ]
-    out += ["</ul>", "</body>", "</html>", ""]
+    out += ["</ul>", "</main>", "</body>", "</html>", ""]
     return "\n".join(out)
 
 

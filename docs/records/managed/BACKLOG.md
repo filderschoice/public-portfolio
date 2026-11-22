@@ -17,7 +17,6 @@
     公開URLで4件のカードが表示され、各 repo リンクと Pages リンク（sesami-wear・ikumemo・romcha）が開ける。
     windows-devenv-setup は Pages リンクが表示されない。スマートフォン幅とダークモードで表示が崩れない
   依存:
-    - BL-003
     - BL-004
     - BL-005
   根拠: >-
@@ -51,19 +50,6 @@
   完了条件: >-
     手順どおりに架空の1行を追加すると生成と --check が成功することを確かめ（確認後に行は戻す）、
     markdownlint・validate-records・scan-secrets が合格する
-  依存: []
-- id: BL-003
-  区分: UX改善
-  タスク内容: >-
-    生成する site/index.html の見た目をカード表示・レスポンシブ（スマートフォン幅で1列）・ダークモード
-    （prefers-color-scheme）に対応させる。CSS は生成スクリプト内にインラインで持ち、外部 CSS・フォント・JS を読み込まない
-  優先度: P2
-  状態: 未着手
-  担当: AIエージェント
-  完了条件: >-
-    再生成した site/index.html がカード表示・メディアクエリ・ダークモードの指定を含み、外部リソースを参照しない。
-    種別（アプリ/ツール）がカード上で判別でき、Pages が無い項目はリンクを出さない。--check が成功し、
-    scan-secrets が合格する
   依存: []
 ```
 <!-- COPILOT_RECORDS:END -->
