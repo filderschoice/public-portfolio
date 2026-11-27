@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t d">
+<title id="t">mimiduku のイメージ図（実際の画面ではありません）</title>
+<desc id="d">スマホの画面に怪しい広告が出て、画面の右端に止まったみみづくのバッジが警告で知らせている模式図。</desc>
+<style>
+svg{--bg:#eaeef2;--dev:#2b3139;--scr:#ffffff;--pan:#f0f3f6;--tx:#1f2328;--mu:#57606a;--ac:#0969da;--acf:#ffffff;--ok:#1a7f37;--wn:#9a6700;--ln:#d0d7de}
+@media (prefers-color-scheme:dark){svg{--bg:#0d1117;--dev:#6e7681;--scr:#0b0f14;--pan:#1c2128;--tx:#e6edf3;--mu:#9da7b3;--ac:#58a6ff;--acf:#0b0f14;--ok:#3fb950;--wn:#d29922;--ln:#30363d}}
+.bg{fill:var(--bg)}.dev{fill:var(--dev)}.scr{fill:var(--scr)}.pan{fill:var(--pan);stroke:var(--ln);stroke-width:1.5}
+.sm{fill:var(--mu);font:11px system-ui,sans-serif}
+.ac{fill:var(--ac)}.wn{fill:var(--wn)}.bar{fill:var(--ln)}.f{fill:var(--acf)}
+</style>
+<rect class="bg" width="400" height="300"/>
+<rect class="dev" x="130" y="16" width="140" height="244" rx="22"/><rect class="scr" x="140" y="30" width="120" height="216" rx="12"/><rect class="bar" x="152" y="44" width="70" height="6" rx="3"/><rect class="bar" x="152" y="58" width="96" height="6" rx="3"/><rect class="pan" x="150" y="84" width="100" height="84" rx="8"/><path class="wn" d="M200 98l16 28h-32z"/><rect class="f" x="198.5" y="107" width="3" height="10" rx="1.5"/><circle class="f" cx="200" cy="121" r="1.8"/><rect class="bar" x="162" y="134" width="76" height="5" rx="2.5"/><rect class="ac" x="176" y="146" width="48" height="14" rx="7"/><rect class="bar" x="152" y="184" width="96" height="6" rx="3"/><rect class="bar" x="152" y="198" width="60" height="6" rx="3"/><path class="ac" d="M262 118l-6 -12 10 4 6 -10 6 10 10 -4 -6 12z"/><ellipse class="ac" cx="278" cy="142" rx="22" ry="26"/><circle class="f" cx="270" cy="138" r="7"/><circle class="f" cx="286" cy="138" r="7"/><circle class="dev" cx="270" cy="138" r="3.5"/><circle class="dev" cx="286" cy="138" r="3.5"/><path class="wn" d="M278 144l-4 6h8z"/><text class="sm" x="200" y="276" text-anchor="middle">画面を見張り、怪しい広告を知らせる</text><text class="sm" x="200" y="292" text-anchor="middle">イメージ図（実際の画面ではありません）</text>
+</svg>

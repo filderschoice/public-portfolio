@@ -14,7 +14,7 @@
 ## 対象システム概要
 
 - 対象: README.md（正本）と、そこから生成する公開ページ
-- 掲載項目: sesami-wear・ikumemo・romcha（アプリ）、windows-devenv-setup（ツール）の4件。公開物が増えたら表へ1行追加する
+- 掲載項目: sesami-wear・ikumemo・mimiduku・romcha（アプリ）、windows-devenv-setup（ツール）の5件。公開物が増えたら表へ1行追加する
 - 最新リリース: 掲載表とは別の「最新リリース」表（`RELEASES:BEGIN` と `RELEASES:END` で囲む。列は 名前・最新リリース・公開日・種類）を
   README に持ち、各項目の最新1件（種類を問わず。プレリリースは種類で明示）をカードへ表示する。リリースが無ければ3列とも「-」
 - イラスト: 各項目の簡易イラストを `site/illustrations/<ID>.svg` の固定資産（手書き SVG、viewBox 400x300）として持つ。
@@ -24,7 +24,8 @@
 
 - FR-001: README.md の冒頭に概要を置き、`PORTFOLIO:BEGIN` と `PORTFOLIO:END` のマーカーで囲んだ Markdown 表に掲載項目を並べる
 - FR-002: 表の列は 名前・説明・種別（アプリ/ツール）・プラットフォーム/言語・repo・Pages（無ければ「-」）・イラスト
-  （SVG の ID。無ければ「-」。ID は `^[A-Za-z0-9-]+$` で、`site/illustrations/<ID>.svg` が実在すること）
+  （SVG の ID。無ければ「-」。ID は `^[A-Za-z0-9-]+$` で、`site/illustrations/<ID>.svg` が実在すること）・
+  初回公開日（最初のリリース〔draft を除く〕の公開日 YYYY-MM-DD の実在日、無ければ「-」。変わらない値のため propose-releases.py は更新せず手で書き、カードに「初回公開 YYYY-MM-DD」と表示する）
 - FR-003: `python scripts/build-pages.py`（標準ライブラリのみ）が表を読み、単一ファイルの `site/index.html` を生成する。
   生成物もコミットする（CI を使えない環境でも `--check` で整合を確認でき、ワークフロー導入後は公開元にそのまま使える）
 - FR-004: `--check` は生成物が README と一致すれば終了コード0、不一致なら1。生成は冪等（2回実行して差分なし）。
@@ -46,8 +47,8 @@
   draft のみ・未知の repo・repo 欠落・repo 列が対象外の URL・取得失敗はエラー終了（終了コード2）。build-pages.py とは分離し、
   ネットワークが無くても build-pages.py の生成と `--check` は変わらない
 - FR-005: 次の場合はエラー終了（終了コード2）する。マーカーが1組でない、見出しが FR-002 の列と一致しない、データ行が無い、
-  行が `|` で始まり終わらない、列数が7でない、名前・説明・プラットフォームが空、種別が アプリ/ツール 以外、
-  repo・Pages（`-` を除く）が https の URL でない、イラストの ID が正規表現に合わない・SVG が実在しない・
+  行が `|` で始まり終わらない、列数が8でない、名前・説明・プラットフォームが空、種別が アプリ/ツール 以外、
+  初回公開日が YYYY-MM-DD の実在日でも「-」でもない、repo・Pages（`-` を除く）が https の URL でない、イラストの ID が正規表現に合わない・SVG が実在しない・
   SVG が検査に通らない（XML として解析できない、生の文字列に DOCTYPE・ENTITY・処理命令・CDATA・XML コメント〔`<!--`。ElementTree が黙って捨てるため生の文字列で拒否〕がある、
   解析時（`iterparse` の `start-ns`）に取得した名前空間の宣言が、接頭辞なしの SVG の名前空間以外〔xlink を含む〕、ルート要素が SVG の svg でない、
   要素が許可リスト〔svg・title・desc・defs・style・g・rect・circle・ellipse・line・path・polygon・polyline・text・tspan〕外、

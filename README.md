@@ -6,12 +6,13 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 ## 公開中のアプリ・ツール
 
 <!-- PORTFOLIO:BEGIN -->
-| 名前 | 説明 | 種別 | プラットフォーム/言語 | repo | Pages | イラスト |
-| --- | --- | --- | --- | --- | --- | --- |
-| sesami-wear | Pixel WatchなどのWear OSスマートウォッチからCANDY HOUSE Sesame 5（+ Hub 3）を施錠・解錠する非公式アプリ。タイルからのワンタップ操作とコンプリケーションでの状態表示に対応。 | アプリ | Kotlin / Wear OS | <https://github.com/filderschoice/sesami-wear> | <https://filderschoice.github.io/sesami-wear/> | sesami-wear |
-| ikumemo | 話すだけで買い物メモ。買ったらスワイプで記録、カレンダーで振り返り。使い切りたい物は期限をお知らせするAndroidアプリ（アカウント・通信・広告なし）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/ikumemo> | <https://filderschoice.github.io/ikumemo/> | ikumemo |
-| romcha | Romcha（ロムチャ）— YouTube公式アプリと同期する、見るだけのフローティングチャットビューワー（Android）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/romcha> | <https://filderschoice.github.io/romcha/> | romcha |
-| windows-devenv-setup | wingetとnpmでWindowsの開発環境を冪等に構築するPowerShellスクリプト。 | ツール | PowerShell / Windows | <https://github.com/filderschoice/windows-devenv-setup> | - | windows-devenv-setup |
+| 名前 | 説明 | 種別 | プラットフォーム/言語 | repo | Pages | イラスト | 初回公開日 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| sesami-wear | Pixel WatchなどのWear OSスマートウォッチからCANDY HOUSE Sesame 5（+ Hub 3）を施錠・解錠する非公式アプリ。タイルからのワンタップ操作とコンプリケーションでの状態表示に対応。 | アプリ | Kotlin / Wear OS | <https://github.com/filderschoice/sesami-wear> | <https://filderschoice.github.io/sesami-wear/> | sesami-wear | 2026-09-06 |
+| ikumemo | 話すだけで買い物メモ。買ったらスワイプで記録、カレンダーで振り返り。使い切りたい物は期限をお知らせするAndroidアプリ（アカウント・通信・広告なし）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/ikumemo> | <https://filderschoice.github.io/ikumemo/> | ikumemo | 2026-11-22 |
+| mimiduku | Androidの画面を見張り、悪質な広告やスケアウェア（偽の警告）に気づいて知らせるアプリ。子供の端末の保護向け。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/mimiduku> | <https://filderschoice.github.io/mimiduku/> | mimiduku | 2026-11-27 |
+| romcha | Romcha（ロムチャ）— YouTube公式アプリと同期する、見るだけのフローティングチャットビューワー（Android）。 | アプリ | Kotlin / Android | <https://github.com/filderschoice/romcha> | <https://filderschoice.github.io/romcha/> | romcha | 2026-09-27 |
+| windows-devenv-setup | wingetとnpmでWindowsの開発環境を冪等に構築するPowerShellスクリプト。 | ツール | PowerShell / Windows | <https://github.com/filderschoice/windows-devenv-setup> | - | windows-devenv-setup | - |
 <!-- PORTFOLIO:END -->
 
 ## 最新リリース
@@ -25,6 +26,7 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 | --- | --- | --- | --- |
 | sesami-wear | v0.17.0 | 2026-11-21 | プレリリース |
 | ikumemo | v0.1.0 | 2026-11-22 | プレリリース |
+| mimiduku | v0.1.0 | 2026-11-27 | プレリリース |
 | romcha | v1.2.0 | 2026-10-15 | 正式 |
 | windows-devenv-setup | - | - | - |
 <!-- RELEASES:END -->
@@ -37,6 +39,8 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 - スクリプトの単体テストは `python -m unittest discover -s tests` で実行します（標準ライブラリのみ。ネットワークへ接続せず、
   一時ディレクトリだけに書き込みます）。
 - Pages が無い項目は、Pages 列を「-」にします。
+- 初回公開日は、最初のリリース（draft を除く）の公開日を `YYYY-MM-DD` で書きます（リリースが無ければ「-」）。
+  公開日は変わらないため、`propose-releases.py` は更新しません（新しい項目の追加時に手で書きます）。
 - 最新リリース表は、`python scripts/propose-releases.py --live` で更新します（`--live` を明示したときだけ接続し、
   対話でユーザーが更新を依頼したとき、または自律ループ内では `CONTRIBUTING.local.md` の例外 EX-001 の期限内・条件内に限ります）。公開 REST API（認証なし・接続先は
   api.github.com 固定）から各 repo の最新リリース（draft を除く先頭1件）を取得し、RELEASES 表の差分案を表示します。
@@ -53,7 +57,7 @@ GitHub アカウント [filderschoice](https://github.com/filderschoice) が公�
 
 公開する repo が増えたら、次の手順で追加します。
 
-1. 掲載表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）へ1行を追加する。列は 名前・説明・種別・プラットフォーム/言語・repo・Pages・イラスト の順
+1. 掲載表（`PORTFOLIO:BEGIN` と `PORTFOLIO:END` の間）へ1行を追加する。列は 名前・説明・種別・プラットフォーム/言語・repo・Pages・イラスト・初回公開日 の順
 2. 最新リリース表（`RELEASES:BEGIN` と `RELEASES:END` の間）へも同じ名前の行を1行追加する（リリースが無ければ `-` の3列）。
    名前の過不足・重複はエラーになる
 3. 種別は `アプリ` か `ツール` のどちらかだけを書く

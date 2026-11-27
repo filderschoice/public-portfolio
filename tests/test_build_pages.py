@@ -8,7 +8,7 @@ from helpers import GOOD_SVG, ROOT, SVG_NS, TempCase, load_script, readme_text
 bp = load_script("build-pages.py")
 NS = f'xmlns="{SVG_NS}"'
 BS = chr(92)  # バックスラッシュ（CSS のエスケープの検査用）
-ALPHA = "| alpha | 説明A | アプリ | Kotlin / Android | <{url}> | - | {ill} |"
+ALPHA = "| alpha | 説明A | アプリ | Kotlin / Android | <{url}> | - | {ill} | - |"
 ALPHA_ONLY_RELEASE = ["| alpha | - | - | - |"]
 
 
