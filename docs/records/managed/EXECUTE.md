@@ -5,6 +5,30 @@
 
 <!-- COPILOT_RECORDS:BEGIN -->
 ```yaml
+- date: 2026-11-28 10:00
+  summary: mimiduku を掲載へ追加し、掲載表へ初回公開日の列を追加した
+  details:
+    変更内容: >-
+      README の掲載表・最新リリース表へ mimiduku を追加し、手書き SVG（site/illustrations/mimiduku.svg）を追加した。
+      掲載表へ「初回公開日」列（最初のリリースの公開日 YYYY-MM-DD、無ければ -）を追加し、build-pages.py で実在日を検査して
+      カードへ「初回公開 YYYY-MM-DD」を表示する。propose-releases.py は掲載表の列定義だけを8列へ合わせた（挙動は不変）。
+      テストの README 雛形と表の行を8列へ更新した。site/index.html を再生成した
+    変更ファイル:
+      - README.md
+      - site/index.html
+      - site/illustrations/mimiduku.svg
+      - scripts/build-pages.py
+      - scripts/propose-releases.py
+      - tests/helpers.py
+      - tests/test_build_pages.py
+      - tests/test_propose_releases.py
+      - docs/records/managed/DESIGN.md
+      - docs/records/managed/EXECUTE.md
+      - CHANGELOG.md
+    検証コマンド: >-
+      python -m unittest discover -s tests、build-pages.py --check、markdownlint-cli2、validate-records.py、scan-secrets.py
+    検証結果: >-
+      成功 - 36件すべて成功、各ゲート合格
 - date: 2026-11-22 23:30
   summary: 最新リリース取得の実 API 利用を、ガードレール 9 章の期限付き例外 EX-001 として記録し、関連する記述を合わせた
   details:

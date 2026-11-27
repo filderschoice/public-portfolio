@@ -61,7 +61,7 @@ class ParseReposTest(unittest.TestCase):
         for url in ("https://github.com/other/alpha", "http://github.com/filderschoice/alpha",
                     "https://github.com/filderschoice/alpha?x=1", "https://github.com/filderschoice/alpha/x",
                     "https://example.com/filderschoice/alpha"):
-            row = f"| alpha | 説明A | アプリ | Kotlin / Android | <{url}> | - | - |"
+            row = f"| alpha | 説明A | アプリ | Kotlin / Android | <{url}> | - | - | - |"
             with self.subTest(url):
                 with self.assertRaises(pr.ProposeError):
                     pr.parse_repos(readme_text(portfolio_rows=[row], release_rows=["| alpha | - | - | - |"]))
@@ -140,7 +140,7 @@ class RunTest(TempCase):
         self.assertEqual(self.run_main("--from-json", str(self.tmp / "nothing.json"))[0], 2)
 
     def test_non_owner_repo_in_readme_exits_2(self):
-        row = "| alpha | 説明A | アプリ | Kotlin / Android | <https://github.com/other/alpha> | - | - |"
+        row = "| alpha | 説明A | アプリ | Kotlin / Android | <https://github.com/other/alpha> | - | - | - |"
         self.write_readme(readme_text(portfolio_rows=[row], release_rows=["| alpha | - | - | - |"]))
         self.save({"alpha": []})
         self.assertEqual(self.run_main("--from-json", str(self.saved))[0], 2)

@@ -29,7 +29,7 @@ REL_COLUMNS = ["名前", "最新リリース", "公開日", "種類"]
 REL_KINDS = ("正式", "プレリリース")
 VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages", "イラスト"]
+COLUMNS = ["名前", "説明", "種別", "プラットフォーム/言語", "repo", "Pages", "イラスト", "初回公開日"]
 KINDS = ("アプリ", "ツール")
 ILLUSTRATION_ID = re.compile(r"^[A-Za-z0-9-]+$")
 SVG_NS = "http://www.w3.org/2000/svg"
@@ -210,6 +210,19 @@ def parse_releases(text, names):
     return result
 
 
+def check_first_date(value, name):
+    """初回公開日（最初のリリースの公開日）。YYYY-MM-DD の実在日か、無ければ - 。"""
+    if value == "-":
+        return None
+    if not DATE.fullmatch(value):
+        raise BuildError(f"{name} の初回公開日は YYYY-MM-DD か - で指定してください: {value!r}")
+    try:
+        datetime.date.fromisoformat(value)
+    except ValueError:
+        raise BuildError(f"{name} の初回公開日が実在しません: {value!r}")
+    return value
+
+
 def parse_readme(text):
     if text.count(BEGIN) != 1 or text.count(END) != 1:
         raise BuildError(f"{BEGIN} と {END} が1組ありません")
@@ -227,7 +240,7 @@ def parse_readme(text):
         cells = split_row(line)
         if len(cells) != len(COLUMNS):
             raise BuildError(f"列数が {len(COLUMNS)} ではありません: {line[:40]}")
-        name, desc, kind, platform, repo, pages, illust = cells
+        name, desc, kind, platform, repo, pages, illust, first = cells
         if not name or not desc or not platform:
             raise BuildError(f"空の必須セルがあります: {name or line[:40]}")
         if kind not in KINDS:
@@ -240,6 +253,7 @@ def parse_readme(text):
             "repo": parse_url(repo, f"{name} の repo"),
             "pages": None if pages == "-" else parse_url(pages, f"{name} の Pages"),
             "illust": None if illust == "-" else check_illustration(illust, name),
+            "first": check_first_date(first, name),
         })
     names = [it["name"] for it in items]
     if len(set(names)) != len(names):
@@ -258,6 +272,10 @@ def release_html(it):
     url = f"{it['repo'].rstrip('/')}/releases/tag/{quote(ver, safe='')}"
     return (f'<p class="release">最新リリース <a href="{e(url)}">{e(ver)}</a>'
             f"（{e(day)}・{e(kind)}）</p>")
+
+
+def first_html(it):
+    return f'<p class="release">初回公開 {html.escape(it["first"] or "-")}</p>'
 
 
 def render(items):
@@ -298,6 +316,7 @@ def render(items):
             f'<div class="meta"><span class="badge {KIND_CLASS[it["kind"]]}">{e(it["kind"])}</span>'
             f"<span>{e(it['platform'])}</span></div>",
             f"<p>{e(it['desc'])}</p>",
+            first_html(it),
             release_html(it),
             f'<div class="links">{links}</div>',
             "</li>",

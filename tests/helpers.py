@@ -29,14 +29,14 @@ def load_script(filename):
 def readme_text(portfolio_rows=None, release_rows=None, nl="\n"):
     """掲載表と最新リリース表を持つ最小の README 本文を返す。"""
     p_rows = portfolio_rows or [
-        "| alpha | 説明A | アプリ | Kotlin / Android | <https://github.com/filderschoice/alpha> | - | alpha |",
+        "| alpha | 説明A | アプリ | Kotlin / Android | <https://github.com/filderschoice/alpha> | - | alpha | 2026-01-02 |",
         "| beta | 説明B | ツール | PowerShell / Windows | <https://github.com/filderschoice/beta> "
-        "| <https://filderschoice.github.io/beta/> | - |",
+        "| <https://filderschoice.github.io/beta/> | - | - |",
     ]
     r_rows = release_rows or ["| alpha | - | - | - |", "| beta | - | - | - |"]
     lines = ["# 見出し", "", "<!-- PORTFOLIO:BEGIN -->",
-             "| 名前 | 説明 | 種別 | プラットフォーム/言語 | repo | Pages | イラスト |",
-             "| --- | --- | --- | --- | --- | --- | --- |", *p_rows, "<!-- PORTFOLIO:END -->", "",
+             "| 名前 | 説明 | 種別 | プラットフォーム/言語 | repo | Pages | イラスト | 初回公開日 |",
+             "| --- | --- | --- | --- | --- | --- | --- | --- |", *p_rows, "<!-- PORTFOLIO:END -->", "",
              "本文", "", "<!-- RELEASES:BEGIN -->", "| 名前 | 最新リリース | 公開日 | 種類 |", "| --- | --- | --- | --- |",
              *r_rows, "<!-- RELEASES:END -->", "", "末尾", ""]
     return nl.join(lines)
